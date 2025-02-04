@@ -272,10 +272,12 @@ function saveFormData() {
 }
 
 // Event listener for veggies selection
-veggiesField.addEventListener("change", () => {
+document.addEventListener("DOMContentLoaded", () => {
+    const cartTotalElement = document.getElementById('cart-total');
     let cartTotal = parseInt(localStorage.getItem("cartTotal")) || 0;
     let selectedVeggie = veggiesField.value.toLowerCase();
 
+    veggiesField.addEventListener('change', () => {
     console.log("Selected Veggie:", selectedVeggie); // ✅ Debugging output
 
     // Adjust cart total
@@ -290,6 +292,7 @@ veggiesField.addEventListener("change", () => {
     localStorage.setItem("cartTotal", cartTotal);
 
     console.log("Updated Cart Total:", cartTotal); // ✅ Debugging output
+});
 });
 
 // Function to load form data from localStorage

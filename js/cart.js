@@ -272,7 +272,7 @@ function saveFormData() {
 }
 
 // Event listener for veggies selection
-document.addEventListener("DOMContentLoaded", () => {
+function Updatetotal(){
     const cartTotalElement = document.getElementById('cart-total');
     let cartTotal = parseInt(localStorage.getItem("cartTotal")) || 0;
     let selectedVeggie = veggiesField.value.toLowerCase();
@@ -293,7 +293,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     console.log("Updated Cart Total:", cartTotal); // ✅ Debugging output
 });
-});
+}
 
 // Function to load form data from localStorage
 function loadFormData() {
@@ -314,6 +314,7 @@ function loadFormData() {
 // Load form data when the page is loaded
 document.addEventListener("DOMContentLoaded", () => {
     loadFormData();
+    Updatetotal();
     console.log("Form Data Loaded");
 });
 

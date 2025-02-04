@@ -205,98 +205,112 @@ function toggleCart() {
 
 //Checkout
 
+
 document.addEventListener('DOMContentLoaded', () => {
     // Retrieve and display the cart total on the checkout page
     const cartTotalElement = document.getElementById('cart-total');
-    const veggiesField = document.getElementById('form-field-veggies');
-    const form = document.querySelector(".elementor-form");
-
-    if (!cartTotalElement || !veggiesField || !form) {
-        console.error("One or more required elements are missing!");
-        return;
-    }
-
     let cartTotal = parseInt(localStorage.getItem('cartTotal')) || 0;
-    cartTotalElement.textContent = cartTotal; // Update display
 
-    // Store the initial selection for proper updates
-    let previousSelection = veggiesField.value.toLowerCase();
+    // Update the displayed cart total
+    cartTotalElement.textContent = cartTotal;
 
-    // Function to adjust cart total based on veggies preference
-    function updateCartTotal() {
-        cartTotal = parseInt(localStorage.getItem('cartTotal')) || 0; // Reset to base total
+    // Add event listener for the veggies dropdown
+    const veggiesField = document.getElementById('form-field-veggies');
+    let previousSelection = veggiesField.value; // Store the initial selection
 
-        // Remove the previous selection's cost
+    veggiesField.addEventListener('change', () => {
+        // Reset the cart total to the base value stored in localStorage
+        cartTotal = parseInt(localStorage.getItem('cartTotal')) || 0;
+
+        // Adjust the cart total based on the previous selection
         if (previousSelection === "steamed") {
-            cartTotal -= 15;
-        } else if (previousSelection === "fried") {
-            cartTotal -= 20;
+            cartTotal -= 15; // Remove ₹15 for "steamed"
+        } else if (previousSelection === "Fried") {
+            cartTotal -= 20; // Remove ₹20 for "Fried"
         }
 
-        // Add the new selection's cost
-        let selectedVeggie = veggiesField.value.toLowerCase();
-        if (selectedVeggie === "steamed") {
-            cartTotal += 15;
-        } else if (selectedVeggie === "fried") {
-            cartTotal += 20;
+        // Adjust the cart total based on the new selection
+        if (veggiesField.value === "steamed") {
+            cartTotal += 15; // Add ₹15 for "steamed"
+        } else if (veggiesField.value === "Fried") {
+            cartTotal += 20; // Add ₹20 for "Fried"
         }
 
-        // Update the displayed total and save it
+        // Update the displayed total
         cartTotalElement.textContent = cartTotal;
+
+        // Save the new total and update previous selection
         localStorage.setItem('cartTotal', cartTotal);
-        previousSelection = selectedVeggie; // Update previous selection
-    }
-
-    // Function to save form data to localStorage
-    function saveFormData() {
-        const formData = {};
-        const formElements = form.elements;
-
-        for (let element of formElements) {
-            if (element.name) {
-                if (element.type === "checkbox" || element.type === "radio") {
-                    formData[element.name] = element.checked;
-                } else {
-                    formData[element.name] = element.value;
-                }
-            }
-        }
-
-        // Save form data
-        localStorage.setItem("formData", JSON.stringify(formData));
-    }
-
-    // Function to load form data from localStorage
-    function loadFormData() {
-        const savedData = JSON.parse(localStorage.getItem("formData"));
-        if (savedData) {
-            for (let element of form.elements) {
-                if (element.name && savedData[element.name] !== undefined) {
-                    if (element.type === "checkbox" || element.type === "radio") {
-                        element.checked = savedData[element.name];
-                    } else {
-                        element.value = savedData[element.name];
-                    }
-                }
-            }
-            previousSelection = veggiesField.value.toLowerCase(); // Update initial selection
-        }
-    }
-
-    // Event listener for veggies dropdown change
-    veggiesField.addEventListener('change', updateCartTotal);
-
-    // Save form data on submit
-    form.addEventListener("submit", (e) => {
-        e.preventDefault();
-        saveFormData();
-        alert("Form data saved!");
+        previousSelection = veggiesField.value; // Update the previous selection
     });
-
-    // Load form data when the page is loaded
-    loadFormData();
 });
 
+
+// Select the form using its class
+const form = document.querySelector(".elementor-form");
+
+// Function to save form data to localStorage
+function saveFormData() {
+    const formData = {};
+    const formElements = form.elements;
+    const veggiesField = document.getElementById('form-field-veggies');
+    const cartTotalElement = document.getElementById('cart-total');
+    let cartTotal = parseInt(localStorage.getItem('cartTotal')) || 0;
+
+    for (let element of formElements) {
+        if (element.name) { // Save inputs with a 'name' attribute
+            if (element.type === "checkbox" || element.type === "radio") {
+                formData[element.name] = element.checked;
+            } else {
+                formData[element.name] = element.value;
+            }
+        }
+    }
+
+    veggiesField.addEventListener('change', () => {
+        // Reset the cart total to the base value stored in localStorage
+        cartTotal = parseInt(localStorage.getItem('cartTotal')) || 0;
+
+    let selectedVeggie = veggiesField.value.toLowerCase();
+    
+    if (selectedVeggie === "steamed") {
+        cartTotal += 15; // Add ₹15 if 'steamed' is selected
+    } else if (selectedVeggie === "fried") {
+        cartTotal += 20; // Add ₹20 if 'Fried' is selected
+    }
+
+       // Update the displayed total and save it
+       cartTotalElement.textContent = cartTotal;
+
+       localStorage.setItem('cartTotal', cartTotal);
+
+       localStorage.setItem("formData", JSON.stringify(formData));
+   }); 
+}
+
+// Function to load form data from localStorage
+function loadFormData() {
+    const savedData = JSON.parse(localStorage.getItem("formData"));
+    if (savedData) {
+        const formElements = form.elements;
+        for (let element of formElements) {
+            if (element.name && savedData[element.name] !== undefined) {
+                if (element.type === "checkbox" || element.type === "radio") {
+                    element.checked = savedData[element.name];
+                } else {
+                    element.value = savedData[element.name];
+                }
+            }
+        }
+    }
+}
+
+// Save form data on submit
+form.addEventListener("submit", (e) => {
+    e.preventDefault(); // Prevent actual form submission for testing
+    saveFormData(); // Save data to localStorage
+  //  alert("Form data saved!");
+});
 
 // Load form data when the page is loaded
 document.addEventListener("DOMContentLoaded", loadFormData);
@@ -473,8 +487,6 @@ function clearCart() {
     orderConfirmation(whatsappUrl);
 
 }
-
-
 
 function orderConfirmation(whatsappUrl) {
 

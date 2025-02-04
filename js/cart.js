@@ -245,9 +245,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-
 // Select the form using its class
 const form = document.querySelector(".elementor-form");
+const cartTotalElement = document.getElementById('cart-total');
+const veggiesField = document.getElementById('form-field-veggies');
 
 // Function to save form data to localStorage
 function saveFormData() {
@@ -265,9 +266,12 @@ function saveFormData() {
     }
     localStorage.setItem("formData", JSON.stringify(formData));
 }
+
 // Function to load form data from localStorage
 function loadFormData() {
     const savedData = JSON.parse(localStorage.getItem("formData"));
+    let cartTotal = parseInt(localStorage.getItem('cartBaseTotal')) || 0; // Start with base cart total
+
     if (savedData) {
         const formElements = form.elements;
         for (let element of formElements) {
@@ -281,23 +285,18 @@ function loadFormData() {
         }
     }
 
-    // Retrieve and update cart total based on saved veggie selection
-    let cartTotal = parseInt(localStorage.getItem('cartTotal')) || 0;
-    const cartTotalElement = document.getElementById('cart-total');
-    const veggiesField = document.getElementById('form-field-veggies');
-
+    // Reset cart total to base value and apply changes based on veggies selection
     if (savedData?.['form-field-veggies']) {
-        veggiesField.value = savedData['form-field-veggies']; // Set dropdown value
+        const selectedVeggie = savedData['form-field-veggies'];
 
-        // Adjust cart total based on saved selection
-        if (savedData['form-field-veggies'] === "steamed") {
+        if (selectedVeggie === "steamed") {
             cartTotal += 15;
-        } else if (savedData['form-field-veggies'] === "Fried") {
+        } else if (selectedVeggie === "Fried") {
             cartTotal += 20;
         }
     }
 
-    // Update the displayed cart total
+    // Update cart total display
     cartTotalElement.textContent = cartTotal;
     localStorage.setItem('cartTotal', cartTotal);
 }
@@ -311,7 +310,6 @@ form.addEventListener("submit", (e) => {
 
 // Load form data when the page is loaded
 document.addEventListener("DOMContentLoaded", loadFormData);
-
 
 // Check if each field is valid using reportValidity()
 function validateForm() {

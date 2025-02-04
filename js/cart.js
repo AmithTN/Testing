@@ -245,35 +245,28 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Select the form using its class
-const form = document.querySelector(".elementor-form");
-const cartTotalElement = document.getElementById('cart-total');
-const veggiesField = document.getElementById('form-field-veggies');
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.querySelector(".elementor-form");
+    const cartTotalElement = document.getElementById('cart-total');
+    const veggiesField = document.getElementById('form-field-veggies');
 
-// Function to save form data to localStorage
-function saveFormData() {
-    const formData = {};
-    const formElements = form.elements;
-
-    for (let element of formElements) {
-        if (element.name) { // Save inputs with a 'name' attribute
-            if (element.type === "checkbox" || element.type === "radio") {
-                formData[element.name] = element.checked;
-            } else {
-                formData[element.name] = element.value;
-            }
-        }
+    // Ensure elements exist
+    if (!form || !cartTotalElement || !veggiesField) {
+        console.error("Required elements not found!");
+        return;
     }
-    localStorage.setItem("formData", JSON.stringify(formData));
-}
 
-// Function to load form data from localStorage
-function loadFormData() {
-    const savedData = JSON.parse(localStorage.getItem("formData"));
-    let cartTotal = parseInt(localStorage.getItem('cartTotal')) || 0; // Start with base cart total
+    let cartTotal = parseInt(localStorage.getItem('cartTotal')) || 0;
 
-    if (savedData) {
-        const formElements = form.elements;
-        for (let element of formElements) {
+    // Display the correct cart total initially
+    cartTotalElement.textContent = cartTotal;
+
+    // Load form data from localStorage
+    function loadFormData() {
+        const savedData = JSON.parse(localStorage.getItem("formData")) || {};
+        cartTotal = 0; // Reset cart total
+
+        for (let element of form.elements) {
             if (element.name && savedData[element.name] !== undefined) {
                 if (element.type === "checkbox" || element.type === "radio") {
                     element.checked = savedData[element.name];
@@ -282,32 +275,72 @@ function loadFormData() {
                 }
             }
         }
+
+        // Update cart total based on veggies selection
+        if (savedData['form-field-veggies']) {
+            const selectedVeggie = savedData['form-field-veggies'].toLowerCase();
+            if (selectedVeggie === "steamed") {
+                cartTotal += 15;
+            } else if (selectedVeggie === "Fried") {
+                cartTotal += 20;
+            }
+        }
+
+        // Update cart display
+        cartTotalElement.textContent = cartTotal;
+        localStorage.setItem('cartTotal', cartTotal);
     }
 
-    // Reset cart total to base value and apply changes based on veggies selection
-    if (savedData?.['form-field-veggies']) {
-        const selectedVeggie = savedData['form-field-veggies'];
+    loadFormData(); // Load saved data on page load
 
-        if (selectedVeggie === "steamed") {
+    // Save form data to localStorage
+    function saveFormData() {
+        const formData = {};
+        for (let element of form.elements) {
+            if (element.name) {
+                formData[element.name] = element.type === "checkbox" || element.type === "radio"
+                    ? element.checked
+                    : element.value;
+            }
+        }
+        localStorage.setItem("formData", JSON.stringify(formData));
+    }
+
+    // Handle veggie selection and update total dynamically
+    let previousSelection = veggiesField.value.toLowerCase();
+
+    veggiesField.addEventListener('change', () => {
+        cartTotal = 0; // Reset cart total
+
+        // Adjust total by removing previous selection
+        if (previousSelection === "steamed") {
+            cartTotal -= 15;
+        } else if (previousSelection === "Fried") {
+            cartTotal -= 20;
+        }
+
+        // Adjust total based on new selection
+        let newSelection = veggiesField.value.toLowerCase();
+        if (newSelection === "steamed") {
             cartTotal += 15;
-        } else if (selectedVeggie === "Fried") {
+        } else if (newSelection === "Fried") {
             cartTotal += 20;
         }
-    }
 
-    // Update cart total display
-    cartTotalElement.textContent = cartTotal;
+        // Update UI and localStorage
+        cartTotalElement.textContent = cartTotal;
+        localStorage.setItem('cartTotal', cartTotal);
+        previousSelection = newSelection;
+    });
 
-    // Save the new total 
-    localStorage.setItem('cartTotal', cartTotal);
-}
-
-// Save form data on submit
-form.addEventListener("submit", (e) => {
-    e.preventDefault(); // Prevent actual form submission for testing
-    saveFormData(); // Save data to localStorage
-    alert("Form data saved!");
+    // Save form data on submit
+    form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        saveFormData();
+        alert("Form data saved!");
+    });
 });
+
 
 // Load form data when the page is loaded
 document.addEventListener("DOMContentLoaded", loadFormData);

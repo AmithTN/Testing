@@ -276,7 +276,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         // Reset cart total and apply veggie selection adjustment
-        cartTotal = parseInt(localStorage.getItem("baseCartTotal")) || 0;
+        cartTotal = parseInt(localStorage.getItem("CartTotal")) || 0;
 
         if (savedData["form-field-veggies"]) {
             let selectedVeggie = savedData["form-field-veggies"].toLowerCase();
@@ -317,7 +317,7 @@ document.addEventListener("DOMContentLoaded", () => {
         let newSelection = veggiesField.value.toLowerCase();
 
         // Retrieve base cart total from localStorage
-        cartTotal = parseInt(localStorage.getItem("baseCartTotal")) || 0;
+        cartTotal = parseInt(localStorage.getItem("CartTotal")) || 0;
 
         // Remove previous selection adjustment
         if (previousSelection === "steamed") {
@@ -333,9 +333,6 @@ document.addEventListener("DOMContentLoaded", () => {
             cartTotal += 20;
         }
 
-        // Update displayed total and store changes
-        cartTotalElement.textContent = cartTotal;
-        localStorage.setItem("cartTotal", cartTotal);
         previousSelection = newSelection; // Update previous selection
     });
 

@@ -245,27 +245,26 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Select the form using its class
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener("DOMContentLoaded", () => {
     const form = document.querySelector(".elementor-form");
-    const cartTotalElement = document.getElementById('cart-total');
-    const veggiesField = document.getElementById('form-field-veggies');
+    const cartTotalElement = document.getElementById("cart-total");
+    const veggiesField = document.getElementById("form-field-veggies");
 
     // Ensure elements exist
     if (!form || !cartTotalElement || !veggiesField) {
-        console.error("Required elements not found!");
+        console.error("One or more required elements are missing!");
         return;
     }
 
-    let cartTotal = parseInt(localStorage.getItem('cartTotal')) || 0;
-
-    // Display the correct cart total initially
+    let cartTotal = parseInt(localStorage.getItem("cartTotal")) || 0;
+    
+    // Ensure correct display of the initial cart total
     cartTotalElement.textContent = cartTotal;
 
     // Load form data from localStorage
     function loadFormData() {
         const savedData = JSON.parse(localStorage.getItem("formData")) || {};
-        cartTotal = 0; // Reset cart total
-
+        
         for (let element of form.elements) {
             if (element.name && savedData[element.name] !== undefined) {
                 if (element.type === "checkbox" || element.type === "radio") {
@@ -276,19 +275,22 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // Update cart total based on veggies selection
-        if (savedData['form-field-veggies']) {
-            const selectedVeggie = savedData['form-field-veggies'].toLowerCase();
+        // Reset cart total and apply veggie selection adjustment
+        cartTotal = parseInt(localStorage.getItem("baseCartTotal")) || 0;
+
+        if (savedData["form-field-veggies"]) {
+            let selectedVeggie = savedData["form-field-veggies"].toLowerCase();
+
             if (selectedVeggie === "steamed") {
                 cartTotal += 15;
-            } else if (selectedVeggie === "Fried") {
+            } else if (selectedVeggie === "fried") {
                 cartTotal += 20;
             }
         }
 
-        // Update cart display
+        // Update the displayed cart total
         cartTotalElement.textContent = cartTotal;
-        localStorage.setItem('cartTotal', cartTotal);
+        localStorage.setItem("cartTotal", cartTotal);
     }
 
     loadFormData(); // Load saved data on page load
@@ -298,39 +300,43 @@ document.addEventListener('DOMContentLoaded', () => {
         const formData = {};
         for (let element of form.elements) {
             if (element.name) {
-                formData[element.name] = element.type === "checkbox" || element.type === "radio"
-                    ? element.checked
-                    : element.value;
+                formData[element.name] =
+                    element.type === "checkbox" || element.type === "radio"
+                        ? element.checked
+                        : element.value;
             }
         }
         localStorage.setItem("formData", JSON.stringify(formData));
     }
 
-    // Handle veggie selection and update total dynamically
+    // Track previous selection for veggie dropdown
     let previousSelection = veggiesField.value.toLowerCase();
 
-    veggiesField.addEventListener('change', () => {
-        cartTotal = 0; // Reset cart total
+    // Listen for changes in the veggies dropdown
+    veggiesField.addEventListener("change", () => {
+        let newSelection = veggiesField.value.toLowerCase();
 
-        // Adjust total by removing previous selection
+        // Retrieve base cart total from localStorage
+        cartTotal = parseInt(localStorage.getItem("baseCartTotal")) || 0;
+
+        // Remove previous selection adjustment
         if (previousSelection === "steamed") {
             cartTotal -= 15;
-        } else if (previousSelection === "Fried") {
+        } else if (previousSelection === "fried") {
             cartTotal -= 20;
         }
 
-        // Adjust total based on new selection
-        let newSelection = veggiesField.value.toLowerCase();
+        // Apply new selection adjustment
         if (newSelection === "steamed") {
             cartTotal += 15;
-        } else if (newSelection === "Fried") {
+        } else if (newSelection === "fried") {
             cartTotal += 20;
         }
 
-        // Update UI and localStorage
+        // Update displayed total and store changes
         cartTotalElement.textContent = cartTotal;
-        localStorage.setItem('cartTotal', cartTotal);
-        previousSelection = newSelection;
+        localStorage.setItem("cartTotal", cartTotal);
+        previousSelection = newSelection; // Update previous selection
     });
 
     // Save form data on submit
@@ -340,7 +346,6 @@ document.addEventListener('DOMContentLoaded', () => {
         alert("Form data saved!");
     });
 });
-
 
 // Load form data when the page is loaded
 document.addEventListener("DOMContentLoaded", loadFormData);

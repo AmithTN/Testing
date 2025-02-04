@@ -272,12 +272,14 @@ function saveFormData() {
         cartTotal = parseInt(localStorage.getItem('cartTotal')) || 0;
 
     let selectedVeggie = veggiesField.value.toLowerCase();
-    
+
     if (selectedVeggie === "steamed") {
         cartTotal += 15; // Add ₹15 if 'steamed' is selected
     } else if (selectedVeggie === "fried") {
         cartTotal += 20; // Add ₹20 if 'Fried' is selected
     }
+
+    console.log("saveFormData:", selectedVeggie);
 
        // Update the displayed total and save it
        cartTotalElement.textContent = cartTotal;
@@ -303,6 +305,9 @@ function loadFormData() {
             }
         }
     }
+
+    console.log("loadFormData:", selectedVeggie);
+
 }
 
 // Save form data on submit

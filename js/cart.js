@@ -205,6 +205,7 @@ function toggleCart() {
 
 //Checkout
 
+
 document.addEventListener('DOMContentLoaded', () => {
     // Retrieve and display the cart total on the checkout page
     const cartTotalElement = document.getElementById('cart-total');
@@ -244,28 +245,33 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+
 // Select the form using its class
-document.addEventListener("DOMContentLoaded", () => {
-    const form = document.querySelector(".elementor-form");
-    const cartTotalElement = document.getElementById("cart-total");
-    const veggiesField = document.getElementById("form-field-veggies");
+const form = document.querySelector(".elementor-form");
 
-    // Ensure elements exist
-    if (!form || !cartTotalElement || !veggiesField) {
-        console.error("One or more required elements are missing!");
-        return;
+// Function to save form data to localStorage
+function saveFormData() {
+    const formData = {};
+    const formElements = form.elements;
+
+    for (let element of formElements) {
+        if (element.name) { // Save inputs with a 'name' attribute
+            if (element.type === "checkbox" || element.type === "radio") {
+                formData[element.name] = element.checked;
+            } else {
+                formData[element.name] = element.value;
+            }
+        }
     }
+    localStorage.setItem("formData", JSON.stringify(formData));
+}
 
-    let cartTotal = parseInt(localStorage.getItem("cartTotal")) || 0;
-    
-    // Ensure correct display of the initial cart total
-    cartTotalElement.textContent = cartTotal;
-
-    // Load form data from localStorage
-    function loadFormData() {
-        const savedData = JSON.parse(localStorage.getItem("formData")) || {};
-        
-        for (let element of form.elements) {
+// Function to load form data from localStorage
+function loadFormData() {
+    const savedData = JSON.parse(localStorage.getItem("formData"));
+    if (savedData) {
+        const formElements = form.elements;
+        for (let element of formElements) {
             if (element.name && savedData[element.name] !== undefined) {
                 if (element.type === "checkbox" || element.type === "radio") {
                     element.checked = savedData[element.name];
@@ -274,78 +280,19 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             }
         }
-
-        // Reset cart total and apply veggie selection adjustment
-        cartTotal = parseInt(localStorage.getItem("CartTotal")) || 0;
-
-        if (savedData["form-field-veggies"]) {
-            let selectedVeggie = savedData["form-field-veggies"].toLowerCase();
-
-            if (selectedVeggie === "steamed") {
-                cartTotal += 15;
-            } else if (selectedVeggie === "fried") {
-                cartTotal += 20;
-            }
-        }
-
-        // Update the displayed cart total
-        cartTotalElement.textContent = cartTotal;
-        localStorage.setItem("cartTotal", cartTotal);
     }
+}
 
-    loadFormData(); // Load saved data on page load
-
-    // Save form data to localStorage
-    function saveFormData() {
-        const formData = {};
-        for (let element of form.elements) {
-            if (element.name) {
-                formData[element.name] =
-                    element.type === "checkbox" || element.type === "radio"
-                        ? element.checked
-                        : element.value;
-            }
-        }
-        localStorage.setItem("formData", JSON.stringify(formData));
-    }
-
-    // Track previous selection for veggie dropdown
-    let previousSelection = veggiesField.value.toLowerCase();
-
-    // Listen for changes in the veggies dropdown
-    veggiesField.addEventListener("change", () => {
-        let newSelection = veggiesField.value.toLowerCase();
-
-        // Retrieve base cart total from localStorage
-        cartTotal = parseInt(localStorage.getItem("CartTotal")) || 0;
-
-        // Remove previous selection adjustment
-        if (previousSelection === "steamed") {
-            cartTotal -= 15;
-        } else if (previousSelection === "fried") {
-            cartTotal -= 20;
-        }
-
-        // Apply new selection adjustment
-        if (newSelection === "steamed") {
-            cartTotal += 15;
-        } else if (newSelection === "fried") {
-            cartTotal += 20;
-        }
-
-        previousSelection = newSelection; // Update previous selection
-    });
-
-    // Save form data on submit
-    form.addEventListener("submit", (e) => {
-        e.preventDefault();
-        saveFormData();
-        alert("Form data saved!");
-    });
+// Save form data on submit
+form.addEventListener("submit", (e) => {
+    e.preventDefault(); // Prevent actual form submission for testing
+    saveFormData(); // Save data to localStorage
+    alert("Form data saved!");
 });
 
 // Load form data when the page is loaded
 document.addEventListener("DOMContentLoaded", loadFormData);
+
 
 // Check if each field is valid using reportValidity()
 function validateForm() {

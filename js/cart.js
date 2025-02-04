@@ -224,7 +224,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Function to adjust cart total based on veggies preference
     function updateCartTotal() {
-        cartTotal = parseInt(localStorage.getItem('baseCartTotal')) || 0; // Reset to base total
+        cartTotal = parseInt(localStorage.getItem('cartTotal')) || 0; // Reset to base total
 
         // Remove the previous selection's cost
         if (previousSelection === "steamed") {

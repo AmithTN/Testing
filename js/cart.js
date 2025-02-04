@@ -521,7 +521,7 @@ function orderConfirmation(whatsappUrl) {
     // Delay the redirect to WhatsApp with the custom message
     setTimeout(() => {
         window.location.href = whatsappUrlWithMessage;
-    }, 1000); // 1-second delay before redirecting, adjust as needed
+    }, 500); // 0.5-second delay before redirecting, adjust as needed
 }
 
 

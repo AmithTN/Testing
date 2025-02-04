@@ -293,8 +293,6 @@ form.addEventListener("submit", (e) => {
 // Load form data when the page is loaded
 document.addEventListener("DOMContentLoaded", loadFormData);
 
-
-// Check if each field is valid using reportValidity()
 function validateForm() {
     let isValid = true;
 
@@ -336,15 +334,20 @@ function validateForm() {
         isValid = false;
     }
 
+    // **Trigger validation messages immediately**
+    nameField.reportValidity();
+    phoneField.reportValidity();
+    addressField.reportValidity();
+    veggiesField.reportValidity();
+    gymField.reportValidity();
+
     // Find the first invalid field and scroll to it
     if (!isValid) {
         document.querySelector(':invalid')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
-    // Trigger validation messages
-    return nameField.reportValidity() && phoneField.reportValidity() &&
-           addressField.reportValidity() && veggiesField.reportValidity() &&
-           gymField.reportValidity();
+    // Return overall validation status
+    return isValid;
 }
 
 

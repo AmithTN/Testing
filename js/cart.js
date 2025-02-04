@@ -205,7 +205,6 @@ function toggleCart() {
 
 //Checkout
 
-
 document.addEventListener('DOMContentLoaded', () => {
     // Retrieve and display the cart total on the checkout page
     const cartTotalElement = document.getElementById('cart-total');
@@ -270,7 +269,7 @@ function saveFormData() {
 // Function to load form data from localStorage
 function loadFormData() {
     const savedData = JSON.parse(localStorage.getItem("formData"));
-    let cartTotal = parseInt(localStorage.getItem('cartBaseTotal')) || 0; // Start with base cart total
+    let cartTotal = parseInt(localStorage.getItem('cartTotal')) || 0; // Start with base cart total
 
     if (savedData) {
         const formElements = form.elements;
@@ -298,6 +297,8 @@ function loadFormData() {
 
     // Update cart total display
     cartTotalElement.textContent = cartTotal;
+
+    // Save the new total 
     localStorage.setItem('cartTotal', cartTotal);
 }
 

@@ -265,7 +265,6 @@ function saveFormData() {
     }
     localStorage.setItem("formData", JSON.stringify(formData));
 }
-
 // Function to load form data from localStorage
 function loadFormData() {
     const savedData = JSON.parse(localStorage.getItem("formData"));
@@ -283,20 +282,25 @@ function loadFormData() {
     }
 
     // Retrieve and update cart total based on saved veggie selection
-    cartTotal = parseInt(localStorage.getItem('cartTotal')) || 0;
-    const savedVeggies = savedData?.['form-field-veggies']; // Retrieve saved veggie selection
+    let cartTotal = parseInt(localStorage.getItem('cartTotal')) || 0;
+    const cartTotalElement = document.getElementById('cart-total');
+    const veggiesField = document.getElementById('form-field-veggies');
 
-    // Reset the cart total based on the stored selection
-    if (savedVeggies === "steamed") {
-        cartTotal += 15;
-    } else if (savedVeggies === "Fried") {
-        cartTotal += 20;
+    if (savedData?.['form-field-veggies']) {
+        veggiesField.value = savedData['form-field-veggies']; // Set dropdown value
+
+        // Adjust cart total based on saved selection
+        if (savedData['form-field-veggies'] === "steamed") {
+            cartTotal += 15;
+        } else if (savedData['form-field-veggies'] === "Fried") {
+            cartTotal += 20;
+        }
     }
 
     // Update the displayed cart total
     cartTotalElement.textContent = cartTotal;
+    localStorage.setItem('cartTotal', cartTotal);
 }
-
 
 // Save form data on submit
 form.addEventListener("submit", (e) => {
@@ -304,7 +308,6 @@ form.addEventListener("submit", (e) => {
     saveFormData(); // Save data to localStorage
     alert("Form data saved!");
 });
-
 
 // Load form data when the page is loaded
 document.addEventListener("DOMContentLoaded", loadFormData);

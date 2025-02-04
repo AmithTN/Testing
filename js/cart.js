@@ -327,12 +327,12 @@ function validateForm() {
     }
 
     if (!veggiesField.value) {
-        veggiesField.setCustomValidity("⚠ Please select a veggies preference.");
+        veggiesField.setCustomValidity("Please select how you prefer your veggies.");
         isValid = false;
     }
 
     if (!gymField.value) {
-        gymField.setCustomValidity("⚠ Please select a gym preference.");
+        gymField.setCustomValidity("Please select a gym preference.");
         isValid = false;
     }
 

@@ -296,53 +296,57 @@ document.addEventListener("DOMContentLoaded", loadFormData);
 
 // Check if each field is valid using reportValidity()
 function validateForm() {
+    let isValid = true;
+
     const nameField = document.getElementById('form-field-fullname');
     const phoneField = document.getElementById('form-field-PhoneNo');
     const addressField = document.getElementById('form-field-address'); 
     const veggiesField = document.getElementById('form-field-veggies');
-/*    const sproutsField = document.getElementById('form-field-sprouts');   */
     const gymField = document.getElementById('form-field-gym');
 
+    // Reset previous validity messages
+    nameField.setCustomValidity("");
+    phoneField.setCustomValidity("");
+    addressField.setCustomValidity("");
+    veggiesField.setCustomValidity("");
+    gymField.setCustomValidity("");
 
     if (!nameField.value.trim()) {
         nameField.setCustomValidity("Please enter your full name.");
-    } else {
-        nameField.setCustomValidity("");
+        isValid = false;
     }
 
     if (!phoneField.value.trim()) {
         phoneField.setCustomValidity("Please enter your 10-digit phone number.");
-    } else {
-        phoneField.setCustomValidity("");
+        isValid = false;
     }
 
     if (!addressField.value.trim()) {
         addressField.setCustomValidity("Please enter your address.");
-    } else {
-        addressField.setCustomValidity("");
+        isValid = false;
     }
 
     if (!veggiesField.value) {
-        veggiesField.setCustomValidity("Please select a veggies preference.");
+        veggiesField.setCustomValidity("⚠ Please select a veggies preference.");
         isValid = false;
-    } else {
-        veggiesField.setCustomValidity("");
     }
 
     if (!gymField.value) {
-        gymField.setCustomValidity("Please select a gym preference.");
+        gymField.setCustomValidity("⚠ Please select a gym preference.");
         isValid = false;
-    } else {
-        gymField.setCustomValidity("");
     }
 
-   
+    // Find the first invalid field and scroll to it
+    if (!isValid) {
+        document.querySelector(':invalid')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
 
+    // Trigger validation messages
     return nameField.reportValidity() && phoneField.reportValidity() &&
-           addressField.reportValidity() && gymField.reportValidity() && veggiesField.reportValidity();
- //        &&  sproutsField.reportValidity() && veggiesField.reportValidity();
-          
+           addressField.reportValidity() && veggiesField.reportValidity() &&
+           gymField.reportValidity();
 }
+
 
 //If the cart is modified on one tab, it won't update automatically in another. so adding an event listener for storage to sync the cart:
 window.addEventListener('storage', () => {

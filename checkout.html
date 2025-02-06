@@ -555,8 +555,6 @@
                                     <input type="hidden" name="queried_id" value="46"/>
                                     <div class="elementor-form-fields-wrapper elementor-labels-above">
 
-                                       
-
                                         <div class="elementor-field-group elementor-field-required">
                                             <label for="form-field-fullname" class="elementor-field-label">Full name <span style="color: red"> *</span></label>
                                             <input type="text" name="form_fields[fullname]" id="form-field-fullname" class="elementor-field elementor-size-md elementor-field-textual" placeholder="Enter your name here" required="required" aria-required="true">                                          
@@ -567,12 +565,10 @@
                                             <input type="tel" name="form_fields[PhoneNo]" id="form-field-PhoneNo" class="elementor-field elementor-size-md elementor-field-textual" placeholder="Enter number here" required="required" aria-required="true" pattern="[0-9]{10}" title="Please enter a valid 10-digit phone number">
                                         </div>
                                     
-                                    
                                         <div class="elementor-field-group elementor-field-required">
                                             <label for="form-field-address" class="elementor-field-label">Address<span style="color: red;">*</span></label>
                                             <input type="text" name="form_fields[address]" id="form-field-address" class="elementor-field elementor-size-md elementor-field-textual" placeholder="Enter address here" required="required" aria-required="true">
                                         </div>
-
 
                                         <div class="elementor-field-group elementor-field-required">
                                             <label for="form-field-veggies" class="elementor-field-label">Veggies Preference<span style="color: red;">*</span></label>
@@ -584,7 +580,17 @@
                                                 <option value="none">None</option>
                                             </select>
                                         </div>
-
+                                        
+                                        <div class="elementor-field-group elementor-field-required">
+                                            <label for="form-field-spicy" class="elementor-field-label">Spicy Preference<span style="color: red;">*</span></label>
+                                            <select name="form_fields[spicy]" id="form-field-spicy" class="elementor-field elementor-size-md" required="required" aria-required="true">
+                                                <option value="" disabled selected>Select an option</option>    
+                                                <option value="less-spicy">Less Spicy</option>
+                                                <option value="medium-spicy">Medium Spicy</option>
+                                                <option value="too-much-spicy">Too Much Spicy</option>
+                                                <option value="none">None</option>
+                                            </select>
+                                        </div>
 <!--
                                         <div class="elementor-field-group elementor-field-required">
                                             <label for="form-field-sprouts" class="elementor-field-label">Sprouts Preference<span style="color: red;">*</span></label>
@@ -657,13 +663,7 @@
                                                 <img class="payment_methods" src="Images/amazon-pay.jpg" alt="Amazon-pay Payment Solutions">	
                                             </div>
                                         </div>     
-
-                                        <div class="elementor-field-group" style="text-align: center; margin-top: 10px;">
-                                          
-                                            <label class="elementor-field-label" style="font-size: 16px; font-weight: bold; color: #409843;">Scan to Pay</label>
-                                            <img src="Images/upi_qr.png" alt="QR Code for Payment" style="width: 150px; height: 150px; margin-top: 5px;">
-                                        </div>
-        
+                                  
                                     </div>
                                 </form>                
                             </div>

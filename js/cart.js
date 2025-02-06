@@ -254,7 +254,7 @@ function saveFormData() {
     const formElements = form.elements;
 
     for (let element of formElements) {
-        if (element.name && element.name !== "form_fields[veggies]") { // Exclude veggies preference
+        if (element.name && element.name !== "form_fields[veggies]" && element.name !== "form_fields[spicy]") { // Exclude veggies preference
             if (element.type === "checkbox" || element.type === "radio") {
                 formData[element.name] = element.checked;
             } else {
@@ -300,14 +300,18 @@ function validateForm() {
     const phoneField = document.getElementById('form-field-PhoneNo');
     const addressField = document.getElementById('form-field-address'); 
     const veggiesField = document.getElementById('form-field-veggies');
+    const spicyField = document.getElementById('form-field-spicy');
     const gymField = document.getElementById('form-field-gym');
+     
 
     // Reset previous validity messages
     nameField.setCustomValidity("");
     phoneField.setCustomValidity("");
     addressField.setCustomValidity("");
     veggiesField.setCustomValidity("");
+    spicyField.setCustomValidity("");
     gymField.setCustomValidity("");
+     
 
     if (!nameField.value.trim()) {
         nameField.setCustomValidity("Please enter your full name.");
@@ -328,6 +332,11 @@ function validateForm() {
         veggiesField.setCustomValidity("Please select how you prefer your veggies.");
         isValid = false;
     }
+    
+    if (!spicyField.value) { 
+        spicyField.setCustomValidity("Please select your spicy preference.");
+        isValid = false;
+    }
 
     if (!gymField.value) {
         gymField.setCustomValidity("Please select a gym preference.");
@@ -339,6 +348,7 @@ function validateForm() {
     phoneField.reportValidity();
     addressField.reportValidity();
     veggiesField.reportValidity();
+    spicyField.reportValidity(); 
     gymField.reportValidity();
 
     // Find the first invalid field and scroll to it
@@ -374,6 +384,7 @@ function checkout() {
         phone: document.getElementById('form-field-PhoneNo').value,
         address: document.getElementById('form-field-address').value,
         veggies: document.getElementById('form-field-veggies').value,
+        spicy: document.getElementById('form-field-spicy').value,
 //        sprouts: document.getElementById('form-field-sprouts').value,
         gym: document.getElementById('form-field-gym').value,
         message: document.getElementById('form-field-message').value,
@@ -405,6 +416,7 @@ function sendEmail(billingDetails, cartData, totalAmount) {
         user_phone: billingDetails.phone,
         user_address: billingDetails.address,
         user_veggies: billingDetails.veggies,
+        user_spicy: billingDetails.spicy,
 //        user_sprouts: billingDetails.sprouts,
         user_gym: billingDetails.gym,
         user_message: billingDetails.message,

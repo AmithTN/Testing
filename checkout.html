@@ -197,6 +197,9 @@
                                             <ul class="submenu">
                                                 <li><a href="curatedmeals">Curated Meals</a></li>
                                                 <li><a href="chicken">Chicken Delights</a></li>
+                                                <li><a href="egg">Egg Delights</a></li>
+                                                <li><a href="ricebowls">Wholesome Rice Bowls </a></li> 
+                                                <li><a href="drinks">Nutritious Drinks</a></li>
                 <!--                                <li><a href="heartybites">Hearty Bites</a></li>           -->
                                                 <li><a href="dryfruits">Dry Fruits</a></li>
                                                 <li><a href="fruits">Fresh Fruits</a></li>
@@ -232,6 +235,9 @@
                                             <ul class="submenu">
                                                 <li><a href="curatedmeals">Curated Meals</a></li>
                                                 <li><a href="chicken">Chicken Delights</a></li>
+                                                <li><a href="egg">Egg Delights</a></li>
+                                                <li><a href="ricebowls">Wholesome Rice Bowls </a></li> 
+                                                <li><a href="drinks">Nutritious Drinks</a></li>
                 <!--                                <li><a href="heartybites">Hearty Bites</a></li>           -->
                                                 <li><a href="dryfruits">Dry Fruits</a></li>
                                                 <li><a href="fruits">Fresh Fruits</a></li>
@@ -331,6 +337,9 @@
                                         <ul class="submenu">
                                             <li><a href="curatedmeals">Curated Meals</a></li>
                                             <li><a href="chicken">Chicken Delights</a></li>
+                                            <li><a href="egg">Egg Delights</a></li>
+                                            <li><a href="ricebowls">Wholesome Rice Bowls </a></li> 
+                                            <li><a href="drinks">Nutritious Drinks</a></li>
                 <!--                                <li><a href="heartybites">Hearty Bites</a></li>           -->
                                             <li><a href="dryfruits">Dry Fruits</a></li>
                                             <li><a href="fruits">Fresh Fruits</a></li>
@@ -369,6 +378,9 @@
                                         <ul class="submenu-1" style="display: none;">
                                             <li><a href="curatedmeals">Curated Meals</a></li>
                                             <li><a href="chicken">Chicken Delights</a></li>
+                                            <li><a href="egg">Egg Delights</a></li>
+                                            <li><a href="ricebowls">Wholesome Rice Bowls </a></li> 
+                                            <li><a href="drinks">Nutritious Drinks</a></li>
                 <!--                                <li><a href="heartybites">Hearty Bites</a></li>           -->
                                             <li ><a href="dryfruits">Dry Fruits</a></li>
                                             <li><a href="fruits">Fresh Fruits</a></li>
@@ -564,20 +576,47 @@
                                             <label for="form-field-PhoneNo" class="elementor-field-label">Phone number <span style="color: red;">*</span></label>
                                             <input type="tel" name="form_fields[PhoneNo]" id="form-field-PhoneNo" class="elementor-field elementor-size-md elementor-field-textual" placeholder="Enter number here" required="required" aria-required="true" pattern="[0-9]{10}" title="Please enter a valid 10-digit phone number">
                                         </div>
+                                        
+                                        <div class="elementor-field-group elementor-field-required">
+                                            <label for="form-field-delivery-area" class="elementor-field-label">Delivery Area<span style="color: red;">*</span></label>
+                                            <select name="form_fields[delivery_area]" id="form-field-delivery-area" class="elementor-field elementor-size-md" required="required" aria-required="true">
+                                                <option value="" disabled selected>Select a delivery area</option>    
+                                                <option value="near_to_siragate">Near to Siragate</option>
+                                                <option value="near_to_shridevi_college">Near to Shridevi College</option>
+                                                <option value="near_to_golds_gym">Near to Gold's Gym</option>
+                                                <option value="near_to_mg_road">Near to MG Road</option>
+                                                <option value="near_to_siddaganga_hospital">Near to Siddaganga hospital</option>
+                                                <option value="near_to_stadium">Near to Stadium</option>
+                                                <option value="near_to_ss_puram">Near to SS Puram</option>
+                                                <option value="near_to_sit">Near to SIT</option>
+                                                <option value="near_to_hanumanthpura">Near to Hanumanthpura</option> 
+                                                <option value="near_to_sapthagiri_extension">Near to Sapthagiri Extension</option>
+                                                <option value="near_to_upparhalli">Near to Upparhalli</option>
+                                                <option value="near_to_caltex">Near to Caltex</option>
+                                                <option value="near_to_banshankri">Near to Banshankri</option>
+                                                <option value="near_to_ssit">Near to SSIT</option>
+                                                <option value="near_to_ssmc">Near to SSMC</option>
+                                                <option value="near_to_shettihalli">Near to Shettihalli</option>
+                                                <option value="near_to_batwadi">Near to Batwadi</option>
+                                                <option value="near_to_kyatsandra">Near to Kyatsandra</option>
+                                            </select>
+                                        </div>
                                     
                                         <div class="elementor-field-group elementor-field-required">
-                                            <label for="form-field-address" class="elementor-field-label">Address<span style="color: red;">*</span></label>
+                                            <label for="form-field-address" class="elementor-field-label">Delivery Address<span style="color: red;">*</span></label>
                                             <input type="text" name="form_fields[address]" id="form-field-address" class="elementor-field elementor-size-md elementor-field-textual" placeholder="Enter address here" required="required" aria-required="true">
                                         </div>
 
                                         <div class="elementor-field-group elementor-field-required">
-                                            <label for="form-field-veggies" class="elementor-field-label">Veggies Preference<span style="color: red;">*</span></label>
+                                            <label for="form-field-veggies" class="elementor-field-label">Veggies Preference <span style="color: red;">*</span>( For Salad's )</label>
                                             <select name="form_fields[veggies]" id="form-field-veggies" class="elementor-field elementor-size-md"  required="required" aria-required="true">
                                                 <option value="" disabled selected>Select an option</option>    
                                                 <option value="raw">Raw</option>
+                                                <option value="boiled">Boiled</option>
                                                 <option value="steamed">Steamed</option>
                                                 <option value="Fried">Pan-Fried</option>
                                                 <option value="none">None</option>
+                                                
                                             </select>
                                         </div>
                                         
@@ -608,15 +647,16 @@
                                             <label for="form-field-gym" class="elementor-field-label">Gym Preference<span style="color: red;">*</span></label>
                                             <select name="form_fields[gym]" id="form-field-gym" class="elementor-field elementor-size-md" required="required" aria-required="true">
                                                 <option value="" disabled selected>Select an option</option>
-                                                <option value="deltafitness">Delta Fitness</option>
-                                                <option value="fitindia">Fit India</option>
-                                                <option value="fitnoholic">Fitnoholic Fitness</option>
-                                                <option value="goldsgym">Gold's Gym</option>
-                                                <option value="hulkfitness">Hulk Fitness</option>
-                                                <option value="powerhouse">Power House</option>
-                                                <option value="rawfitness">Raw Fitness</option>
-                                                <option value="rrfitness">RR Fitness</option>
-                                                <option value="universalfitness">Universal Fitness</option>
+                                                <option value="Addict Fitness">Addict Fitness</option>
+                                                <option value="Delta fitness">Delta Fitness</option>
+                                                <option value="Fit India">Fit India</option>
+                                                <option value="Fitnoholic Fitness">Fitnoholic Fitness</option>
+                                                <option value="Golds Gym">Gold's Gym</option>
+                                                <option value="Hulk Fitness">Hulk Fitness</option>
+                                                <option value="Power House">Power House</option>
+                                                <option value="Raw Fitness">Raw Fitness</option>
+                                                <option value="RR Fitness">RR Fitness</option>
+                                                <option value="Universal Fitness">Universal Fitness</option>
                                                 <option value="none">None of the above</option>
                                             </select>
                                         </div>
@@ -626,26 +666,18 @@
                                                 <textarea name="form_fields[message]" id="form-field-message" class="elementor-field-textual elementor-field elementor-size-md" rows="4" placeholder="Type your message here"></textarea>	
                                             </label>
                                         </div>
-                                        
-                                        <div class="elementor-field-group elementor-field-required">
-                                            <label for="form-field-payment-phone" class="elementor-field-label" style="color: #409843;"><b>Payment Contact Number</b></label>
-                                            <input type="text" name="form_fields[payment_phone]" id="form-field-payment-phone" style="font-weight: bold; "  class="elementor-field elementor-size-md elementor-field-textual" value="7338534614" readonly="readonly" aria-required="true">
+                                         
+                                        <div id="coupon-container" style="display: flex; align-items: center; justify-content: space-between; width: 100%; margin-top: 10px; margin-bottom: 10px;">
+                                            <input type="text" id="coupon-code" placeholder="Enter coupon code" style="flex-grow: 1; padding: 5px; font-size: 14px;">
+                                            <button id="apply-coupon" style="background-color: #409843; margin-left: 10px; padding: 5px 10px; font-size: 14px;">Apply</button>
                                         </div>
-                                        
-                                        <div class="elementor-field-group elementor-field-required">
-                                            <label for="form-field-recipient-name" class="elementor-field-label" style="color: #409843; "><b>Recipient Name</b></label>
-                                            <input type="text" name="form_fields[recipient_name]" id="form-field-recipient-name" style="font-weight: bold;" class="elementor-field elementor-size-md elementor-field-textual" value="Amith" readonly="readonly" aria-required="true">
-                                        </div>      
-                                        
-                                        <p >
-                                            All UPI payments are accepted.                                           
-                                        </p>
-                                    
+  
                                         <div id="delivery-charge-container" style="display: flex; align-items: center; justify-content: space-between; width: 100%; margin-top: 10px; margin-bottom: 10px;">
                                             <h4 style="margin: 0; font-size: 15px; font-weight: bold;">Delivery Charges Extra</h4>
                                             <div style="flex-grow: 1;"></div> <!-- Middle gap -->
-                                            <h4 style="margin: 0; font-size: 18px; font-weight: bold;"><span id="delivery-charge">₹20 - ₹50</span></h4>
+                                            <h4 style="margin: 0; font-size: 18px; font-weight: bold;">₹<span id="delivery-charge">0</span></h4>
                                         </div>
+                                        
                                         
                                         <div id="cart-total-container" style="display: flex; align-items: center; justify-content: space-between; width: 100%; margin-top: 20px; margin-bottom: 20px;">
                                             <h4 style="margin: 0; font-size: 18px; font-weight: bold;">Total </h4>
@@ -1050,7 +1082,7 @@
 
  
     <script src="js/script.js?v=4.0" defer></script> <!--defer ensures the script runs after the document has been fully loaded.-->
-    <script src="js/cart.js?v=12.0" defer></script>   <!--defer ensures the script runs after the document has been fully loaded.-->
+    <script src="js/cart.js?v=20.0" defer></script>   <!--defer ensures the script runs after the document has been fully loaded.-->
 
  
 

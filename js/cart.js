@@ -204,123 +204,135 @@ function toggleCart() {
 
 
 //Checkout
+
 document.addEventListener('DOMContentLoaded', () => {
+    // Retrieve and display the cart total on the checkout page
     const cartTotalElement = document.getElementById('cart-total');
-    const deliveryChargeElement = document.getElementById('delivery-charge'); 
+    const deliveryChargeElement = document.getElementById('delivery-charge'); // Get the delivery charge span
 
-    let initialCartTotal = parseInt(localStorage.getItem('cartTotal')) || 0; 
-    let currentCartTotal = initialCartTotal;
-    let discountApplied = 0;
-    let deliveryCharge = 0;
-    let couponApplied = false;
+    let cartTotal = parseInt(localStorage.getItem('cartTotal')) || 0;
 
-    function updateDisplay() {
-        cartTotalElement.textContent = currentCartTotal;
-        deliveryChargeElement.textContent = deliveryCharge;
-    }
+    // Update the displayed cart total
+    cartTotalElement.textContent = cartTotal;
 
-    updateDisplay();
-
-    // Veggies Dropdown Event Listener
+    // Add event listener for the veggies dropdown
     const veggiesField = document.getElementById('form-field-veggies');
-    let previousSelection = null; // Track previous selection
+    let previousSelection = veggiesField.value; // Store the initial selection
 
     veggiesField.addEventListener('change', () => {
-        let newAmount = 0;
+        // Reset the cart total to the base value stored in localStorage
+        cartTotal = parseInt(localStorage.getItem('cartTotal')) || 0;
 
-        if (veggiesField.value === "boiled") newAmount = 10;
-        else if (veggiesField.value === "steamed") newAmount = 15;
-        else if (veggiesField.value === "Fried") newAmount = 20;
-
-        if (previousSelection) {
-            let prevAmount = previousSelection === "boiled" ? 10 :
-                             previousSelection === "steamed" ? 15 :
-                             previousSelection === "Fried" ? 20 : 0;
-            currentCartTotal -= prevAmount;
+        // Adjust the cart total based on the previous selection
+        if (previousSelection === "boiled") {
+            cartTotal -= 10; // Remove ₹10 for "boiled"
+        } else if (previousSelection === "steamed") {            
+            cartTotal -= 15; // Remove ₹15 for "steamed"
+        } else if (previousSelection === "Fried") {
+            cartTotal -= 20; // Remove ₹20 for "Fried"
         }
 
-        currentCartTotal += newAmount;
-        previousSelection = veggiesField.value;
+        // Adjust the cart total based on the new selection
+        if (veggiesField.value === "boiled") {
+            cartTotal += 10; // Add ₹10 for "boiled"          
+        } else if (veggiesField.value === "steamed") {
+            cartTotal += 15; // Add ₹15 for "steamed"
+        } else if (veggiesField.value === "Fried") {
+            cartTotal += 20; // Add ₹20 for "Fried"
+        }
 
-        updateTotal();
+        // Update the displayed total
+        cartTotalElement.textContent = cartTotal;
+
+        // Save the new total and update previous selection
+        localStorage.setItem('cartTotal', cartTotal);
+        previousSelection = veggiesField.value; // Update the previous selection
     });
 
-    // Delivery Area Dropdown Event Listener
-    const deliveryField = document.getElementById('form-field-delivery-area');
-    let previousDeliverySelection = null;
 
-    const deliveryCharges = {
-        "near_to_siragate": 20, "near_to_shridevi_college": 30, "near_to_golds_gym": 30,
-        "near_to_ss_puram": 40, "near_to_mg_road": 40, "near_to_siddaganga_hospital": 40,
-        "near_to_stadium": 40, "near_to_hanumanthpura": 40, "near_to_caltex": 40, "near_to_banshankri": 40,
-        "near_to_sit": 50, "near_to_jayanagar": 50, "near_to_sapthagiri_extension": 50,
-        "near_to_upparhalli": 50, "near_to_ssit": 50, "near_to_ssmc": 60, "near_to_shettihalli": 60,
-        "near_to_batwadi": 60, "near_to_kyatsandra": 60
-    };
+    // Add event listener for the delivery area dropdown
+    const deliveryField = document.getElementById('form-field-delivery-area');
+    let previousDeliverySelection = deliveryField.value; // Store the initial selection
 
     deliveryField.addEventListener('change', () => {
-        let newDeliveryCharge = deliveryCharges[deliveryField.value] || 0;
 
-        if (previousDeliverySelection) {
-            let prevCharge = deliveryCharges[previousDeliverySelection] || 0;
-            currentCartTotal -= prevCharge;
+        // Reset the cart total to the base value stored in localStorage
+        cartTotal = parseInt(localStorage.getItem('cartTotal')) || 0;
+
+        // Delivery charges mapping
+        const deliveryCharges = {
+            "near_to_siragate": 20,
+            "near_to_shridevi_college": 30, "near_to_golds_gym": 30,
+            "near_to_ss_puram": 40, "near_to_mg_road": 40, "near_to_siddaganga_hospital": 40,
+            "near_to_stadium": 40, "near_to_hanumanthpura" : 40, "near_to_caltex": 40, "near_to_banshankri": 40,
+            "near_to_sit": 50, "near_to_jayanagar": 50, "near_to_sapthagiri_extension": 50,
+            "near_to_upparhalli": 50, "near_to_ssit": 50,
+            "near_to_ssmc": 60, "near_to_shettihalli": 60, "near_to_batwadi": 60, "near_to_kyatsandra": 60
+        };
+
+        // Remove previous delivery charge if applicable
+        if (previousDeliverySelection in deliveryCharges) {
+            cartTotal -= deliveryCharges[previousDeliverySelection]; // Deduct previous charge
         }
 
-        // Only apply delivery charge if cart total is ≤ 300
-        if (initialCartTotal <= 300) {
-            currentCartTotal += newDeliveryCharge;
-            deliveryCharge = newDeliveryCharge;
-        } else {
-            deliveryCharge = 0;
+        // Get new delivery charge
+        let newDeliveryCharge = 0;
+        if (deliveryField.value in deliveryCharges) {
+            newDeliveryCharge = deliveryCharges[deliveryField.value]; // Set new delivery charge
+            cartTotal += newDeliveryCharge; // Add new charge to cart total
         }
 
+        // Update Delivery Charges display
+        deliveryChargeElement.textContent = newDeliveryCharge; // Show updated delivery charge
+
+        // Update displayed total
+        cartTotalElement.textContent = cartTotal;
+
+        // Save the new total and update previous selection
+        localStorage.setItem('cartTotal', cartTotal);
         previousDeliverySelection = deliveryField.value;
-        updateTotal();
     });
 
-    // Coupon Code Handling
-    const applyCouponButton = document.getElementById('apply-coupon');
-    const couponField = document.getElementById('coupon-code');
+     // Coupon Code Handling
+     const applyCouponButton = document.getElementById('apply-coupon');
+     const couponField = document.getElementById('coupon-code');
+ 
+     const discounts = {
+         "SAVE5": 0.05, "SAVE10": 0.10, "SAVE20": 0.20
+     };
+ 
+     applyCouponButton.addEventListener('click', () => {
+         if (couponApplied) {
+             alert("Coupon already applied!");
+             return;
+         }
+ 
+         const couponCode = couponField.value.trim().toUpperCase();
+ 
+         if (couponCode in discounts) {
+             discountApplied = initialCartTotal * discounts[couponCode];
+             alert(`Coupon applied! You got a ${discounts[couponCode] * 100}% discount.`);
+             couponApplied = true;
+         } else {
+             alert("Invalid coupon code.");
+             return;
+         }
+ 
+         updateTotal();
+     });
+ 
+     function updateTotal() {
+         let finalTotal = initialCartTotal - discountApplied;
+ 
+         currentCartTotal = finalTotal;
+ 
+         localStorage.setItem('cartTotal', currentCartTotal);
 
-    const discounts = {
-        "SAVE5": 0.05, "SAVE10": 0.10, "SAVE20": 0.20
-    };
-
-    applyCouponButton.addEventListener('click', () => {
-        if (couponApplied) {
-            alert("Coupon already applied!");
-            return;
-        }
-
-        const couponCode = couponField.value.trim().toUpperCase();
-
-        if (couponCode in discounts) {
-            discountApplied = initialCartTotal * discounts[couponCode];
-            alert(`Coupon applied! You got a ${discounts[couponCode] * 100}% discount.`);
-            couponApplied = true;
-        } else {
-            alert("Invalid coupon code.");
-            return;
-        }
-
-        updateTotal();
-    });
-
-    function updateTotal() {
-        let finalTotal = initialCartTotal - discountApplied;
-
-        if (initialCartTotal > 300) {
-            deliveryCharge = 0;
-        }
-
-        finalTotal += deliveryCharge;
-        currentCartTotal = finalTotal;
-
-        localStorage.setItem('cartTotal', currentCartTotal);
-        updateDisplay();
-    }
+        // Save the new total and update previous selection
+        localStorage.setItem('cartTotal', cartTotal);
+     }
+ 
 });
-
 
 // Select the form using its class
 const form = document.querySelector(".elementor-form");

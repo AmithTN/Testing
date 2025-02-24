@@ -212,6 +212,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let cartTotal = parseInt(localStorage.getItem('cartTotal')) || 0;
 
+    let couponApplied = false;  // Track if a coupon is applied
+    let discountApplied = 0;  // Store the discount amount
+   
+
     // Update the displayed cart total
     cartTotalElement.textContent = cartTotal;
 
@@ -291,47 +295,48 @@ document.addEventListener('DOMContentLoaded', () => {
         // Save the new total and update previous selection
         localStorage.setItem('cartTotal', cartTotal);
         previousDeliverySelection = deliveryField.value;
+        
     });
+
+    let initialCartTotal = parseInt(localStorage.getItem('cartTotal')) || 0;
 
      // Coupon Code Handling
      const applyCouponButton = document.getElementById('apply-coupon');
      const couponField = document.getElementById('coupon-code');
- 
+
+
+    //"SAVE5": 0.05,"SAVE20": 0.20, 
+
      const discounts = {
-         "SAVE5": 0.05, "SAVE10": 0.10, "SAVE20": 0.20
+          "SAVE10": 0.10, "Fitnoholic20": 0.20, 
+         "Hulk20": 0.20, "Power20": 0.20, "Raw20": 0.20, "Samrat20": 0.20, "Universal20": 0.20
      };
  
+ 
+ 
      applyCouponButton.addEventListener('click', () => {
-         if (couponApplied) {
-             alert("Coupon already applied!");
-             return;
-         }
- 
-         const couponCode = couponField.value.trim().toUpperCase();
- 
-         if (couponCode in discounts) {
-             discountApplied = initialCartTotal * discounts[couponCode];
-             alert(`Coupon applied! You got a ${discounts[couponCode] * 100}% discount.`);
-             couponApplied = true;
-         } else {
-             alert("Invalid coupon code.");
-             return;
-         }
- 
-         updateTotal();
-     });
- 
-     function updateTotal() {
-         let finalTotal = initialCartTotal - discountApplied;
- 
-         currentCartTotal = finalTotal;
- 
-         localStorage.setItem('cartTotal', currentCartTotal);
-
-        // Save the new total and update previous selection
-        localStorage.setItem('cartTotal', cartTotal);
-     }
- 
+        if (couponApplied) {
+            alert("Coupon already applied!");
+            return;
+        }
+    
+        const couponCode = couponField.value.trim().toUpperCase();
+    
+        if (couponCode in discounts) {
+            let discountPercentage = discounts[couponCode];
+            discountApplied = initialCartTotal * discountPercentage;
+            
+            let finalTotal = initialCartTotal - discountApplied;
+            localStorage.setItem('cartTotal', finalTotal); // Save the discounted total
+    
+            cartTotalElement.textContent = finalTotal; // Update the displayed total
+    
+            alert(`Coupon applied! You got a ${discountPercentage * 100}% discount.`);
+            couponApplied = true; // Prevent multiple applications
+        } else {
+            alert("Invalid coupon code.");
+        }
+    });
 });
 
 // Select the form using its class
@@ -485,7 +490,7 @@ function checkout() {
         address: document.getElementById('form-field-address').value,
         veggies: document.getElementById('form-field-veggies').value,
         spicy: document.getElementById('form-field-spicy').value,
-//        sprouts: document.getElementById('form-field-sprouts').value,
+        coupon: document.getElementById('apply-coupon').value,
         gym: document.getElementById('form-field-gym').value,
         message: document.getElementById('form-field-message').value,
     };
@@ -518,7 +523,7 @@ function sendEmail(billingDetails, cartData, totalAmount) {
         user_address: billingDetails.address,
         user_veggies: billingDetails.veggies,
         user_spicy: billingDetails.spicy,
-//        user_sprouts: billingDetails.sprouts,
+        coupon_code: billingDetails.coupon,
         user_gym: billingDetails.gym,
         user_message: billingDetails.message,
         cart_data: JSON.stringify(cartData, null, 2),
@@ -568,7 +573,6 @@ function sendEmail(billingDetails, cartData, totalAmount) {
         }
     }
 }
-
 
 function clearCart() {
     localStorage.removeItem("cartData");

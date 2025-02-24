@@ -208,158 +208,123 @@ function toggleCart() {
 document.addEventListener('DOMContentLoaded', () => {
     // Retrieve and display the cart total on the checkout page
     const cartTotalElement = document.getElementById('cart-total');
-    const deliveryChargeElement = document.getElementById('delivery-charge'); // Get the delivery charge span
+    const deliveryChargeElement = document.getElementById('delivery-charge'); 
 
-    let cartTotal = parseInt(localStorage.getItem('cartTotal')) || 0;
+    let originalCartTotal = parseInt(localStorage.getItem('cartTotal')) || 0; 
+    let discountedTotal = originalCartTotal;
+    let discountApplied = 0; 
+    let deliveryCharge = 0;
 
-    // Update the displayed cart total
-    cartTotalElement.textContent = cartTotal;
+    // Update displayed total
+    function updateDisplay() {
+        cartTotalElement.textContent = discountedTotal;
+        deliveryChargeElement.textContent = deliveryCharge;
+    }
 
-    // Add event listener for the veggies dropdown
+    updateDisplay();
+
+    // Veggies Dropdown Event Listener
     const veggiesField = document.getElementById('form-field-veggies');
-    let previousSelection = veggiesField.value; // Store the initial selection
+    let previousSelection = veggiesField.value;
 
     veggiesField.addEventListener('change', () => {
-        // Reset the cart total to the base value stored in localStorage
-        cartTotal = parseInt(localStorage.getItem('cartTotal')) || 0;
+        originalCartTotal = parseInt(localStorage.getItem('cartTotal')) || 0;
 
-        // Adjust the cart total based on the previous selection
-        if (previousSelection === "boiled") {
-            cartTotal -= 10; // Remove ₹10 for "boiled"
-        } else if (previousSelection === "steamed") {            
-            cartTotal -= 15; // Remove ₹15 for "steamed"
-        } else if (previousSelection === "Fried") {
-            cartTotal -= 20; // Remove ₹20 for "Fried"
-        }
+        // Remove previous selection cost
+        if (previousSelection === "boiled") originalCartTotal -= 10;
+        else if (previousSelection === "steamed") originalCartTotal -= 15;
+        else if (previousSelection === "Fried") originalCartTotal -= 20;
 
-        // Adjust the cart total based on the new selection
-        if (veggiesField.value === "boiled") {
-            cartTotal += 10; // Add ₹10 for "boiled"          
-        } else if (veggiesField.value === "steamed") {
-            cartTotal += 15; // Add ₹15 for "steamed"
-        } else if (veggiesField.value === "Fried") {
-            cartTotal += 20; // Add ₹20 for "Fried"
-        }
+        // Add new selection cost
+        if (veggiesField.value === "boiled") originalCartTotal += 10;
+        else if (veggiesField.value === "steamed") originalCartTotal += 15;
+        else if (veggiesField.value === "Fried") originalCartTotal += 20;
 
-        // Update the displayed total
-        cartTotalElement.textContent = cartTotal;
+        previousSelection = veggiesField.value; // Update selection
 
-        // Save the new total and update previous selection
-        localStorage.setItem('cartTotal', cartTotal);
-        previousSelection = veggiesField.value; // Update the previous selection
+        updateTotal(); // Update total with new amount
     });
 
-
-    // Add event listener for the delivery area dropdown
+    // Delivery Area Dropdown Event Listener
     const deliveryField = document.getElementById('form-field-delivery-area');
-    let previousDeliverySelection = deliveryField.value; // Store the initial selection
+    let previousDeliverySelection = deliveryField.value;
+
+    const deliveryCharges = {
+        "near_to_siragate": 20, "near_to_shridevi_college": 30, "near_to_golds_gym": 30,
+        "near_to_ss_puram": 40, "near_to_mg_road": 40, "near_to_siddaganga_hospital": 40,
+        "near_to_stadium": 40, "near_to_hanumanthpura": 40, "near_to_caltex": 40, "near_to_banshankri": 40,
+        "near_to_sit": 50, "near_to_jayanagar": 50, "near_to_sapthagiri_extension": 50,
+        "near_to_upparhalli": 50, "near_to_ssit": 50, "near_to_ssmc": 60, "near_to_shettihalli": 60,
+        "near_to_batwadi": 60, "near_to_kyatsandra": 60
+    };
 
     deliveryField.addEventListener('change', () => {
+        originalCartTotal = parseInt(localStorage.getItem('cartTotal')) || 0;
 
-        // Reset the cart total to the base value stored in localStorage
-        cartTotal = parseInt(localStorage.getItem('cartTotal')) || 0;
-
-        // Delivery charges mapping
-        const deliveryCharges = {
-            "near_to_siragate": 20,
-            "near_to_shridevi_college": 30, "near_to_golds_gym": 30,
-            "near_to_ss_puram": 40, "near_to_mg_road": 40, "near_to_siddaganga_hospital": 40,
-            "near_to_stadium": 40, "near_to_hanumanthpura" : 40, "near_to_caltex": 40, "near_to_banshankri": 40,
-            "near_to_sit": 50, "near_to_jayanagar": 50, "near_to_sapthagiri_extension": 50,
-            "near_to_upparhalli": 50, "near_to_ssit": 50,
-            "near_to_ssmc": 60, "near_to_shettihalli": 60, "near_to_batwadi": 60, "near_to_kyatsandra": 60
-        };
-
-        // Remove previous delivery charge if applicable
+        // Remove previous delivery charge
         if (previousDeliverySelection in deliveryCharges) {
-            cartTotal -= deliveryCharges[previousDeliverySelection]; // Deduct previous charge
+            originalCartTotal -= deliveryCharges[previousDeliverySelection];
         }
 
-        // Get new delivery charge
         let newDeliveryCharge = 0;
         
-/*
-        if (deliveryField.value in deliveryCharges) {
-            newDeliveryCharge = deliveryCharges[deliveryField.value]; // Set new delivery charge
-            cartTotal += newDeliveryCharge; // Add new charge to cart total
-        }
-*/
-            // Only apply delivery charge if the cart total (before discounts) is ≤ 300
-        if (cartTotal <= 300 && deliveryField.value in deliveryCharges) {
-           newDeliveryCharge = deliveryCharges[deliveryField.value]; 
-           cartTotal += newDeliveryCharge; 
+        // Only apply delivery charge if the original cart total (before discount) is ≤ 300
+        if (originalCartTotal <= 300 && deliveryField.value in deliveryCharges) {
+            newDeliveryCharge = deliveryCharges[deliveryField.value];
+            originalCartTotal += newDeliveryCharge;
         }
 
-        // Update Delivery Charges display
-        deliveryChargeElement.textContent = newDeliveryCharge; // Show updated delivery charge
+        deliveryCharge = newDeliveryCharge;
+        previousDeliverySelection = deliveryField.value; 
 
-        // Update displayed total
-        cartTotalElement.textContent = cartTotal;
-
-
-        // Save the new total and update previous selection
-        localStorage.setItem('cartTotal', cartTotal);
-        previousDeliverySelection = deliveryField.value;
+        updateTotal();
     });
 
     // Coupon Code Handling
     const applyCouponButton = document.getElementById('apply-coupon');
     const couponField = document.getElementById('coupon-code');
-/*
-    const discounts = {
-        "SAVE5": 0.05,
-        "SAVE10": 0.10,
-        "SAVE20": 0.20
-    };
-*/
+    let couponApplied = false; // Prevent multiple applications
 
     const discounts = {
-        "SAVE5": 0.05,
-        "SAVE10": 0.10,
-        "SAVE20": 0.20
+        "SAVE5": 0.05, "SAVE10": 0.10, "SAVE20": 0.20
     };
 
     applyCouponButton.addEventListener('click', () => {
+        if (couponApplied) {
+            alert("Coupon already applied!");
+            return;
+        }
+
         const couponCode = couponField.value.trim().toUpperCase();
 
         if (couponCode in discounts) {
-            discountApplied = cartTotal * discounts[couponCode];
+            discountApplied = originalCartTotal * discounts[couponCode];
             alert(`Coupon applied! You got a ${discounts[couponCode] * 100}% discount.`);
+            couponApplied = true; // Prevent multiple applications
         } else {
-            discountApplied = 0;
             alert("Invalid coupon code.");
+            return;
         }
 
         updateTotal();
     });
 
-    // Update displayed total
+    // Function to update total correctly
     function updateTotal() {
-        let finalTotal = cartTotal - discountApplied;
+        discountedTotal = originalCartTotal - discountApplied;
 
-        // Check if the cart total BEFORE discount is above 300
-/*        if (finalTotal > 300) {
+        // Delivery charge should be waived only if the **original cart total** (before discount) > 300
+        if (originalCartTotal > 300) {
             deliveryCharge = 0;
         }
-*/
 
+        discountedTotal += deliveryCharge;
 
-    // Check if the cart total BEFORE discount is above 300
-    if (finalTotal > 300) {
-        deliveryCharge = 0; // Waive delivery charge
-    }
-
-        finalTotal += deliveryCharge;
-
-        deliveryChargeElement.textContent = deliveryCharge;
-        cartTotalElement.textContent = finalTotal;
-
-        deliveryChargeElement.textContent = deliveryCharge;
-        cartTotalElement.textContent = finalTotal;
-        localStorage.setItem('cartTotal', finalTotal);
-        previousDeliverySelection = deliveryField.value;
+        localStorage.setItem('cartTotal', discountedTotal);
+        updateDisplay();
     }
 });
+
 
 // Select the form using its class
 const form = document.querySelector(".elementor-form");

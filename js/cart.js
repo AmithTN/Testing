@@ -345,7 +345,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // Check if the cart total BEFORE discount is above 300
-    if (cartTotal > 300) {
+    if (finalTotal > 300) {
         deliveryCharge = 0; // Waive delivery charge
     }
 
@@ -357,6 +357,7 @@ document.addEventListener('DOMContentLoaded', () => {
         deliveryChargeElement.textContent = deliveryCharge;
         cartTotalElement.textContent = finalTotal;
         localStorage.setItem('cartTotal', finalTotal);
+        previousDeliverySelection = deliveryField.value;
     }
 });
 

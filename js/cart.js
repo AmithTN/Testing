@@ -208,6 +208,8 @@ function toggleCart() {
 document.addEventListener('DOMContentLoaded', () => {
     // Retrieve and display the cart total on the checkout page
     const cartTotalElement = document.getElementById('cart-total');
+    const deliveryChargeElement = document.getElementById('delivery-charge'); // Get the delivery charge span
+
     let cartTotal = parseInt(localStorage.getItem('cartTotal')) || 0;
 
     // Update the displayed cart total
@@ -222,14 +224,18 @@ document.addEventListener('DOMContentLoaded', () => {
         cartTotal = parseInt(localStorage.getItem('cartTotal')) || 0;
 
         // Adjust the cart total based on the previous selection
-        if (previousSelection === "steamed") {
+        if (previousSelection === "boiled") {
+            cartTotal -= 10; // Remove ₹10 for "boiled"
+        } else if (previousSelection === "steamed") {            
             cartTotal -= 15; // Remove ₹15 for "steamed"
         } else if (previousSelection === "Fried") {
             cartTotal -= 20; // Remove ₹20 for "Fried"
         }
 
         // Adjust the cart total based on the new selection
-        if (veggiesField.value === "steamed") {
+        if (veggiesField.value === "boiled") {
+            cartTotal += 10; // Add ₹10 for "boiled"          
+        } else if (veggiesField.value === "steamed") {
             cartTotal += 15; // Add ₹15 for "steamed"
         } else if (veggiesField.value === "Fried") {
             cartTotal += 20; // Add ₹20 for "Fried"
@@ -242,8 +248,117 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('cartTotal', cartTotal);
         previousSelection = veggiesField.value; // Update the previous selection
     });
-});
 
+
+    // Add event listener for the delivery area dropdown
+    const deliveryField = document.getElementById('form-field-delivery-area');
+    let previousDeliverySelection = deliveryField.value; // Store the initial selection
+
+    deliveryField.addEventListener('change', () => {
+
+        // Reset the cart total to the base value stored in localStorage
+        cartTotal = parseInt(localStorage.getItem('cartTotal')) || 0;
+
+        // Delivery charges mapping
+        const deliveryCharges = {
+            "near_to_siragate": 20,
+            "near_to_shridevi_college": 30, "near_to_golds_gym": 30,
+            "near_to_ss_puram": 40, "near_to_mg_road": 40, "near_to_siddaganga_hospital": 40,
+            "near_to_stadium": 40, "near_to_hanumanthpura" : 40, "near_to_caltex": 40, "near_to_banshankri": 40,
+            "near_to_sit": 50, "near_to_jayanagar": 50, "near_to_sapthagiri_extension": 50,
+            "near_to_upparhalli": 50, "near_to_ssit": 50,
+            "near_to_ssmc": 60, "near_to_shettihalli": 60, "near_to_batwadi": 60, "near_to_kyatsandra": 60
+        };
+
+        // Remove previous delivery charge if applicable
+        if (previousDeliverySelection in deliveryCharges) {
+            cartTotal -= deliveryCharges[previousDeliverySelection]; // Deduct previous charge
+        }
+
+        // Get new delivery charge
+        let newDeliveryCharge = 0;
+        
+/*
+        if (deliveryField.value in deliveryCharges) {
+            newDeliveryCharge = deliveryCharges[deliveryField.value]; // Set new delivery charge
+            cartTotal += newDeliveryCharge; // Add new charge to cart total
+        }
+*/
+            // Only apply delivery charge if the cart total (before discounts) is ≤ 300
+        if (cartTotal <= 300 && deliveryField.value in deliveryCharges) {
+           newDeliveryCharge = deliveryCharges[deliveryField.value]; 
+           cartTotal += newDeliveryCharge; 
+        }
+
+        // Update Delivery Charges display
+        deliveryChargeElement.textContent = newDeliveryCharge; // Show updated delivery charge
+
+        // Update displayed total
+        cartTotalElement.textContent = cartTotal;
+
+
+        // Save the new total and update previous selection
+        localStorage.setItem('cartTotal', cartTotal);
+        previousDeliverySelection = deliveryField.value;
+    });
+
+    // Coupon Code Handling
+    const applyCouponButton = document.getElementById('apply-coupon');
+    const couponField = document.getElementById('coupon-code');
+/*
+    const discounts = {
+        "SAVE5": 0.05,
+        "SAVE10": 0.10,
+        "SAVE20": 0.20
+    };
+*/
+
+    const discounts = {
+        "SAVE5": 0.05,
+        "SAVE10": 0.10,
+        "SAVE20": 0.20
+    };
+
+    applyCouponButton.addEventListener('click', () => {
+        const couponCode = couponField.value.trim().toUpperCase();
+
+        if (couponCode in discounts) {
+            discountApplied = cartTotal * discounts[couponCode];
+            alert(`Coupon applied! You got a ${discounts[couponCode] * 100}% discount.`);
+        } else {
+            discountApplied = 0;
+            alert("Invalid coupon code.");
+        }
+
+        updateTotal();
+    });
+
+    // Update displayed total
+    function updateTotal() {
+        let finalTotal = cartTotal - discountApplied;
+
+        // Check if the cart total BEFORE discount is above 300
+/*        if (finalTotal > 300) {
+            deliveryCharge = 0;
+        }
+*/
+
+
+    // Check if the cart total BEFORE discount is above 300
+    if (cartTotal > 300) {
+        deliveryCharge = 0; // Waive delivery charge
+    }
+
+        finalTotal += deliveryCharge;
+
+        deliveryChargeElement.textContent = deliveryCharge;
+        cartTotalElement.textContent = finalTotal;
+
+        deliveryChargeElement.textContent = deliveryCharge;
+        cartTotalElement.textContent = finalTotal;
+        localStorage.setItem('cartTotal', finalTotal);
+    }
+});
 
 // Select the form using its class
 const form = document.querySelector(".elementor-form");
@@ -254,7 +369,7 @@ function saveFormData() {
     const formElements = form.elements;
 
     for (let element of formElements) {
-        if (element.name && element.name !== "form_fields[veggies]" && element.name !== "form_fields[spicy]") { // Exclude veggies preference
+        if (element.name && element.name !== "form_fields[veggies]" && element.name !== "form_fields[delivery_area]") { // Exclude veggies preference
             if (element.type === "checkbox" || element.type === "radio") {
                 formData[element.name] = element.checked;
             } else {
@@ -298,19 +413,23 @@ function validateForm() {
 
     const nameField = document.getElementById('form-field-fullname');
     const phoneField = document.getElementById('form-field-PhoneNo');
+    const deliveryareaField = document.getElementById('form-field-delivery-area');
     const addressField = document.getElementById('form-field-address'); 
     const veggiesField = document.getElementById('form-field-veggies');
     const spicyField = document.getElementById('form-field-spicy');
     const gymField = document.getElementById('form-field-gym');
+    
      
 
     // Reset previous validity messages
     nameField.setCustomValidity("");
     phoneField.setCustomValidity("");
+    deliveryareaField.setCustomValidity("");
     addressField.setCustomValidity("");
     veggiesField.setCustomValidity("");
     spicyField.setCustomValidity("");
     gymField.setCustomValidity("");
+    
      
 
     if (!nameField.value.trim()) {
@@ -320,6 +439,11 @@ function validateForm() {
 
     if (!phoneField.value.trim()) {
         phoneField.setCustomValidity("Please enter your 10-digit phone number.");
+        isValid = false;
+    }
+    
+    if (!deliveryareaField.value.trim()) {
+        deliveryareaField.setCustomValidity("Please select your Delivery area.");
         isValid = false;
     }
 
@@ -346,6 +470,7 @@ function validateForm() {
     // **Trigger validation messages immediately**
     nameField.reportValidity();
     phoneField.reportValidity();
+    deliveryareaField.reportValidity();
     addressField.reportValidity();
     veggiesField.reportValidity();
     spicyField.reportValidity(); 
@@ -382,6 +507,7 @@ function checkout() {
     const billingDetails = {
         name: document.getElementById('form-field-fullname').value,
         phone: document.getElementById('form-field-PhoneNo').value,
+        area: document.getElementById('form-field-delivery-area').value,
         address: document.getElementById('form-field-address').value,
         veggies: document.getElementById('form-field-veggies').value,
         spicy: document.getElementById('form-field-spicy').value,
@@ -414,6 +540,7 @@ function sendEmail(billingDetails, cartData, totalAmount) {
     const templateParams = {
         user_name: billingDetails.name,
         user_phone: billingDetails.phone,
+        user_area: billingDetails.area,
         user_address: billingDetails.address,
         user_veggies: billingDetails.veggies,
         user_spicy: billingDetails.spicy,

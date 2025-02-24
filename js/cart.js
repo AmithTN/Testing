@@ -204,20 +204,18 @@ function toggleCart() {
 
 
 //Checkout
-
 document.addEventListener('DOMContentLoaded', () => {
-    // Retrieve and display the cart total on the checkout page
     const cartTotalElement = document.getElementById('cart-total');
     const deliveryChargeElement = document.getElementById('delivery-charge'); 
 
-    let originalCartTotal = parseInt(localStorage.getItem('cartTotal')) || 0; 
-    let discountedTotal = originalCartTotal;
-    let discountApplied = 0; 
+    let initialCartTotal = parseInt(localStorage.getItem('cartTotal')) || 0; 
+    let currentCartTotal = initialCartTotal;
+    let discountApplied = 0;
     let deliveryCharge = 0;
+    let couponApplied = false;
 
-    // Update displayed total
     function updateDisplay() {
-        cartTotalElement.textContent = discountedTotal;
+        cartTotalElement.textContent = currentCartTotal;
         deliveryChargeElement.textContent = deliveryCharge;
     }
 
@@ -225,29 +223,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Veggies Dropdown Event Listener
     const veggiesField = document.getElementById('form-field-veggies');
-    let previousSelection = veggiesField.value;
+    let previousSelection = null; // Track previous selection
 
     veggiesField.addEventListener('change', () => {
-        originalCartTotal = parseInt(localStorage.getItem('cartTotal')) || 0;
+        let newAmount = 0;
 
-        // Remove previous selection cost
-        if (previousSelection === "boiled") originalCartTotal -= 10;
-        else if (previousSelection === "steamed") originalCartTotal -= 15;
-        else if (previousSelection === "Fried") originalCartTotal -= 20;
+        if (veggiesField.value === "boiled") newAmount = 10;
+        else if (veggiesField.value === "steamed") newAmount = 15;
+        else if (veggiesField.value === "Fried") newAmount = 20;
 
-        // Add new selection cost
-        if (veggiesField.value === "boiled") originalCartTotal += 10;
-        else if (veggiesField.value === "steamed") originalCartTotal += 15;
-        else if (veggiesField.value === "Fried") originalCartTotal += 20;
+        if (previousSelection) {
+            let prevAmount = previousSelection === "boiled" ? 10 :
+                             previousSelection === "steamed" ? 15 :
+                             previousSelection === "Fried" ? 20 : 0;
+            currentCartTotal -= prevAmount;
+        }
 
-        previousSelection = veggiesField.value; // Update selection
+        currentCartTotal += newAmount;
+        previousSelection = veggiesField.value;
 
-        updateTotal(); // Update total with new amount
+        updateTotal();
     });
 
     // Delivery Area Dropdown Event Listener
     const deliveryField = document.getElementById('form-field-delivery-area');
-    let previousDeliverySelection = deliveryField.value;
+    let previousDeliverySelection = null;
 
     const deliveryCharges = {
         "near_to_siragate": 20, "near_to_shridevi_college": 30, "near_to_golds_gym": 30,
@@ -259,31 +259,28 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     deliveryField.addEventListener('change', () => {
-        originalCartTotal = parseInt(localStorage.getItem('cartTotal')) || 0;
+        let newDeliveryCharge = deliveryCharges[deliveryField.value] || 0;
 
-        // Remove previous delivery charge
-        if (previousDeliverySelection in deliveryCharges) {
-            originalCartTotal -= deliveryCharges[previousDeliverySelection];
+        if (previousDeliverySelection) {
+            let prevCharge = deliveryCharges[previousDeliverySelection] || 0;
+            currentCartTotal -= prevCharge;
         }
 
-        let newDeliveryCharge = 0;
-        
-        // Only apply delivery charge if the original cart total (before discount) is ≤ 300
-        if (originalCartTotal <= 300 && deliveryField.value in deliveryCharges) {
-            newDeliveryCharge = deliveryCharges[deliveryField.value];
-            originalCartTotal += newDeliveryCharge;
+        // Only apply delivery charge if cart total is ≤ 300
+        if (initialCartTotal <= 300) {
+            currentCartTotal += newDeliveryCharge;
+            deliveryCharge = newDeliveryCharge;
+        } else {
+            deliveryCharge = 0;
         }
 
-        deliveryCharge = newDeliveryCharge;
-        previousDeliverySelection = deliveryField.value; 
-
+        previousDeliverySelection = deliveryField.value;
         updateTotal();
     });
 
     // Coupon Code Handling
     const applyCouponButton = document.getElementById('apply-coupon');
     const couponField = document.getElementById('coupon-code');
-    let couponApplied = false; // Prevent multiple applications
 
     const discounts = {
         "SAVE5": 0.05, "SAVE10": 0.10, "SAVE20": 0.20
@@ -298,9 +295,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const couponCode = couponField.value.trim().toUpperCase();
 
         if (couponCode in discounts) {
-            discountApplied = originalCartTotal * discounts[couponCode];
+            discountApplied = initialCartTotal * discounts[couponCode];
             alert(`Coupon applied! You got a ${discounts[couponCode] * 100}% discount.`);
-            couponApplied = true; // Prevent multiple applications
+            couponApplied = true;
         } else {
             alert("Invalid coupon code.");
             return;
@@ -309,18 +306,17 @@ document.addEventListener('DOMContentLoaded', () => {
         updateTotal();
     });
 
-    // Function to update total correctly
     function updateTotal() {
-        discountedTotal = originalCartTotal - discountApplied;
+        let finalTotal = initialCartTotal - discountApplied;
 
-        // Delivery charge should be waived only if the **original cart total** (before discount) > 300
-        if (originalCartTotal > 300) {
+        if (initialCartTotal > 300) {
             deliveryCharge = 0;
         }
 
-        discountedTotal += deliveryCharge;
+        finalTotal += deliveryCharge;
+        currentCartTotal = finalTotal;
 
-        localStorage.setItem('cartTotal', discountedTotal);
+        localStorage.setItem('cartTotal', currentCartTotal);
         updateDisplay();
     }
 });

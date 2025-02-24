@@ -323,12 +323,18 @@ document.addEventListener('DOMContentLoaded', () => {
         const couponCode = couponField.value.trim().toUpperCase();
     
         if (couponCode in discounts) {
+
             let discountPercentage = discounts[couponCode];
-            discountApplied = initialCartTotal * discountPercentage;
-            
-            let finalTotal = initialCartTotal - discountApplied;
-            localStorage.setItem('cartTotal', finalTotal); // Save the discounted total
-    
+
+            // Get the most updated total including delivery and veggie charges
+            let currentCartTotal = parseInt(localStorage.getItem('cartTotal')) || 0;
+
+            // Apply the discount on the latest total
+            discountApplied = currentCartTotal * discountPercentage;
+
+            let finalTotal = currentCartTotal - discountApplied;
+            localStorage.setItem('cartTotal', finalTotal); // Save the new total
+
             cartTotalElement.textContent = finalTotal; // Update the displayed total
     
             alert(`Coupon applied! You got a ${discountPercentage * 100}% discount.`);

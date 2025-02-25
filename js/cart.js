@@ -497,7 +497,7 @@ function checkout() {
         address: document.getElementById('form-field-address').value,
         veggies: document.getElementById('form-field-veggies').value,
         spicy: document.getElementById('form-field-spicy').value,
-        coupon: document.getElementById('apply-coupon').value,
+        coupon: document.getElementById('coupon-code').value,
         gym: document.getElementById('form-field-gym').value,
         message: document.getElementById('form-field-message').value,
     };

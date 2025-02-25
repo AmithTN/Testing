@@ -311,10 +311,8 @@ document.addEventListener('DOMContentLoaded', () => {
         "SAVE10": 0.10, "LOYALTY20": 0.20, "FITNOHOLIC20": 0.20, "HULK20": 0.20, 
         "POWER20": 0.20, "RAW20": 0.20, "SAMRAT20": 0.20, "UNIVERSAL20": 0.20
     };
+    
 
- 
- 
- 
      applyCouponButton.addEventListener('click', () => {
         if (couponApplied) {
             alert("Coupon already applied!");
@@ -500,6 +498,7 @@ function checkout() {
         coupon: document.getElementById('coupon-code').value,
         gym: document.getElementById('form-field-gym').value,
         message: document.getElementById('form-field-message').value,
+        deliverycharges: document.getElementById('delivery-charge').innerText,
     };
     
     // Disable the checkout button
@@ -533,6 +532,7 @@ function sendEmail(billingDetails, cartData, totalAmount) {
         coupon_code: billingDetails.coupon,
         user_gym: billingDetails.gym,
         user_message: billingDetails.message,
+        delivery_Charges: billingDetails.deliverycharges, 
         cart_data: JSON.stringify(cartData, null, 2),
         total_amount: totalAmount,
     };

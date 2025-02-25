@@ -309,7 +309,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const discounts = {
         "SAVE10": 0.10, "LOYALTY20": 0.20, "FITNOHOLIC20": 0.20, "HULK20": 0.20, 
-        "POWER20": 0.20, "RAW20": 0.20, "SAMRAT20": 0.20, "UNIVERSAL20": 0.20
+        "POWER20": 0.20, "RAW20": 0.20, "RR20": 0.20, "SAMRAT20": 0.20, "UNIVERSAL20": 0.20
     };
     
 

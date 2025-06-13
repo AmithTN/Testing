@@ -558,7 +558,7 @@ function sendEmail(billingDetails, cartData, totalAmount) {
             })
             .catch((error) => {
                 console.error("Failed to send email:", error);
-                alert("We encountered an issue while processing your order. Please try again.");
+                alert("We encountered an issue while processing your order. Please Contact Admin's ph : 8660739940.");
                 
                 // Re-enable the checkout button
                 const checkoutButton = document.getElementById('place_order');

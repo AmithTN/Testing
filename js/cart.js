@@ -206,120 +206,142 @@ function toggleCart() {
 //Checkout
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Retrieve and display the cart total on the checkout page
     const cartTotalElement = document.getElementById('cart-total');
-    const deliveryChargeElement = document.getElementById('delivery-charge');
-    const serviceChargeElement = document.getElementById('service-charge');
-    const itemTotalElement = document.getElementById('item-total');
-    const breakdownDeliveryElement = document.getElementById('breakdown-delivery');
+    const deliveryChargeElement = document.getElementById('delivery-charge'); // Get the delivery charge span
 
     let cartTotal = parseInt(localStorage.getItem('cartTotal')) || 0;
-    let couponApplied = false;
-    let discountApplied = 0;
-    let previousVeggieCharge = 0;
-    let previousDeliverySelection = "";
 
-    const deliveryCharges = {
-        "near_to_siragate": 20,
-        "near_to_shridevi_college": 30, "near_to_golds_gym": 30, "near_to_Chickpet": 30, "near_to_mandipet": 40,
-        "near_to_ss_puram": 40, "near_to_mg_road": 40, "near_to_siddaganga_hospital": 40, "near_to_antharasanahalli": 40,
-        "near_to_stadium": 40, "near_to_hanumanthpura": 40, "near_to_caltex": 40,
-        "near_to_sit": 50, "near_to_jayanagar": 50, "near_to_sapthagiri_extension": 50, "near_to_banshankri": 50,
-        "near_to_upparhalli": 50, "near_to_ssit": 50, "near_to_Danah_palace": 50,
-        "near_to_ssmc": 60, "near_to_shettihalli": 60, "near_to_batwadi": 60, "near_to_kyatsandra": 60, "near_to_belagumba": 60
-    };
+    let couponApplied = false;  // Track if a coupon is applied
+    let discountApplied = 0;  // Store the discount amount
+   
 
-    function splitCharge(total) {
-        const delivery = Math.floor(total * 0.8);
-        const service = total - delivery;
-        return { delivery, service };
-    }
-
-    function updateBreakdown(itemTotal, delivery, service) {
-        if (itemTotalElement) itemTotalElement.textContent = itemTotal;
-        if (breakdownDeliveryElement) breakdownDeliveryElement.textContent = delivery;
-        if (serviceChargeElement) serviceChargeElement.textContent = service;
-    }
-
-    // Initial load
+    // Update the displayed cart total
     cartTotalElement.textContent = cartTotal;
 
-    // Veggies dropdown handling
+    // Add event listener for the veggies dropdown
     const veggiesField = document.getElementById('form-field-veggies');
+    let previousSelection = veggiesField.value; // Store the initial selection
+
     veggiesField.addEventListener('change', () => {
-        cartTotal = parseInt(localStorage.getItem('cartTotal')) || 0;
-        cartTotal -= previousVeggieCharge;
-
-        let newCharge = 0;
-        const val = veggiesField.value;
-        if (val === "boiled") newCharge = 10;
-        else if (val === "steamed") newCharge = 15;
-        else if (val === "Fried") newCharge = 20;
-
-        previousVeggieCharge = newCharge;
-        cartTotal += newCharge;
-
-        cartTotalElement.textContent = cartTotal;
-        localStorage.setItem('cartTotal', cartTotal);
-    });
-
-    // Delivery area dropdown handling
-    const deliveryField = document.getElementById('form-field-delivery-area');
-    deliveryField.addEventListener('change', () => {
+        // Reset the cart total to the base value stored in localStorage
         cartTotal = parseInt(localStorage.getItem('cartTotal')) || 0;
 
-        // Remove previous delivery charge
-        if (previousDeliverySelection in deliveryCharges) {
-            cartTotal -= deliveryCharges[previousDeliverySelection];
+        // Adjust the cart total based on the previous selection
+        if (previousSelection === "boiled") {
+            cartTotal -= 10; // Remove ₹10 for "boiled"
+        } else if (previousSelection === "steamed") {            
+            cartTotal -= 15; // Remove ₹15 for "steamed"
+        } else if (previousSelection === "Fried") {
+            cartTotal -= 20; // Remove ₹20 for "Fried"
         }
 
-        const selectedArea = deliveryField.value;
-        let newDeliveryCharge = deliveryCharges[selectedArea] || 0;
-        const { delivery, service } = splitCharge(newDeliveryCharge);
-        cartTotal += newDeliveryCharge;
+        // Adjust the cart total based on the new selection
+        if (veggiesField.value === "boiled") {
+            cartTotal += 10; // Add ₹10 for "boiled"          
+        } else if (veggiesField.value === "steamed") {
+            cartTotal += 15; // Add ₹15 for "steamed"
+        } else if (veggiesField.value === "Fried") {
+            cartTotal += 20; // Add ₹20 for "Fried"
+        }
 
-        // Update display
-        deliveryChargeElement.textContent = delivery;
-        if (serviceChargeElement) serviceChargeElement.textContent = service;
-        if (itemTotalElement) itemTotalElement.textContent = cartTotal - newDeliveryCharge;
-        if (breakdownDeliveryElement) breakdownDeliveryElement.textContent = delivery;
+        // Update the displayed total
         cartTotalElement.textContent = cartTotal;
 
-        // Save and update
+        // Save the new total and update previous selection
         localStorage.setItem('cartTotal', cartTotal);
-        previousDeliverySelection = selectedArea;
+        previousSelection = veggiesField.value; // Update the previous selection
     });
 
-    // Coupon Code Handling
-    const applyCouponButton = document.getElementById('apply-coupon');
-    const couponField = document.getElementById('coupon-code');
+
+    // Add event listener for the delivery area dropdown
+    const deliveryField = document.getElementById('form-field-delivery-area');
+    let previousDeliverySelection = deliveryField.value; // Store the initial selection
+
+    deliveryField.addEventListener('change', () => {
+
+        // Reset the cart total to the base value stored in localStorage
+        cartTotal = parseInt(localStorage.getItem('cartTotal')) || 0;
+
+        // Delivery charges mapping
+        const deliveryCharges = {
+            "near_to_siragate": 20,
+            "near_to_shridevi_college": 30, "near_to_golds_gym": 30, "near_to_Chickpet": 30, "near_to_mandipet": 40,
+            "near_to_ss_puram": 40, "near_to_mg_road": 40, "near_to_siddaganga_hospital": 40, "near_to_antharasanahalli": 40,
+            "near_to_stadium": 40, "near_to_hanumanthpura" : 40, "near_to_caltex": 40, 
+            "near_to_sit": 50, "near_to_jayanagar": 50, "near_to_sapthagiri_extension": 50,  "near_to_banshankri": 50,
+            "near_to_upparhalli": 50, "near_to_ssit": 50, "near_to_Danah_palace": 50,
+            "near_to_ssmc": 60, "near_to_shettihalli": 60, "near_to_batwadi": 60, "near_to_kyatsandra": 60, "near_to_belagumba": 60
+        };
+
+        // Remove previous delivery charge if applicable
+        if (previousDeliverySelection in deliveryCharges) {
+            cartTotal -= deliveryCharges[previousDeliverySelection]; // Deduct previous charge
+        }
+
+        // Get new delivery charge
+        let newDeliveryCharge = 0;
+        if (deliveryField.value in deliveryCharges) {
+            newDeliveryCharge = deliveryCharges[deliveryField.value]; // Set new delivery charge
+            cartTotal += newDeliveryCharge; // Add new charge to cart total
+        }
+
+        // Update Delivery Charges display
+        deliveryChargeElement.textContent = newDeliveryCharge; // Show updated delivery charge
+
+        // Update displayed total
+        cartTotalElement.textContent = cartTotal;
+
+        // Save the new total and update previous selection
+        localStorage.setItem('cartTotal', cartTotal);
+        previousDeliverySelection = deliveryField.value;
+        
+    });
+
+    let initialCartTotal = parseInt(localStorage.getItem('cartTotal')) || 0;
+
+     // Coupon Code Handling
+     const applyCouponButton = document.getElementById('apply-coupon');
+     const couponField = document.getElementById('coupon-code');
+
+
+    //"SAVE5": 0.05,"SAVE20": 0.20, 
     const discounts = {
-        "SAVE5": 0.05, "LOYALTY5": 0.05, "FITNOHOLIC5": 0.05, "HULK5": 0.05,
-        "POWER5": 0.05, "RAW5": 0.05, "RR5": 0.05, "SAMRAT5": 0.05, "UNIVERSAL5": 0.05,
-        "SACHIN5": 0.05, "WASEEM5": 0.05, "PRATHAP5": 0.05, "ARUN5": 0.05
+        "SAVE5": 0.05, "LOYALTY5": 0.05, "FITNOHOLIC5": 0.05, "HULK5": 0.05, 
+        "POWER5": 0.05, "RAW5": 0.05, "RR5": 0.05, "SAMRAT5": 0.05, "UNIVERSAL5": 0.05,  
+        "SACHIN5": 0.05, "WASEEM5": 0.05, "PRATHAP5": 0.05,  "ARUN5": 0.05
     };
 
-    applyCouponButton.addEventListener('click', () => {
+     applyCouponButton.addEventListener('click', () => {
         if (couponApplied) {
             alert("Coupon already applied!");
             return;
         }
-
+    
         const couponCode = couponField.value.trim().toUpperCase();
+    
         if (couponCode in discounts) {
-            const discountPercentage = discounts[couponCode];
-            discountApplied = cartTotal * discountPercentage;
-            cartTotal -= discountApplied;
 
-            localStorage.setItem('cartTotal', cartTotal);
-            cartTotalElement.textContent = cartTotal;
+            let discountPercentage = discounts[couponCode];
 
+            // Get the most updated total including delivery and veggie charges
+            let currentCartTotal = parseInt(localStorage.getItem('cartTotal')) || 0;
+
+            // Apply the discount on the latest total
+            discountApplied = currentCartTotal * discountPercentage;
+
+            let finalTotal = currentCartTotal - discountApplied;
+            localStorage.setItem('cartTotal', finalTotal); // Save the new total
+
+            cartTotalElement.textContent = finalTotal; // Update the displayed total
+    
             alert(`Coupon applied! You got a ${discountPercentage * 100}% discount.`);
-            couponApplied = true;
+            couponApplied = true; // Prevent multiple applications
         } else {
             alert("Invalid coupon code.");
         }
     });
-
+});
 
 // Select the form using its class
 const form = document.querySelector(".elementor-form");
@@ -378,7 +400,7 @@ function validateForm() {
     const addressField = document.getElementById('form-field-address'); 
     const veggiesField = document.getElementById('form-field-veggies');
     const spicyField = document.getElementById('form-field-spicy');
-    const gymField = document.getElementById('form-field-gym');
+ //   const gymField = document.getElementById('form-field-gym');
     
      
 
@@ -389,7 +411,7 @@ function validateForm() {
     addressField.setCustomValidity("");
     veggiesField.setCustomValidity("");
     spicyField.setCustomValidity("");
-    gymField.setCustomValidity("");
+ //   gymField.setCustomValidity("");
     
      
 
@@ -423,11 +445,11 @@ function validateForm() {
         isValid = false;
     }
 
-    if (!gymField.value) {
+/*    if (!gymField.value) {
         gymField.setCustomValidity("Please select a gym preference.");
         isValid = false;
     }
-
+*/
     // **Trigger validation messages immediately**
     nameField.reportValidity();
     phoneField.reportValidity();
@@ -435,7 +457,7 @@ function validateForm() {
     addressField.reportValidity();
     veggiesField.reportValidity();
     spicyField.reportValidity(); 
-    gymField.reportValidity();
+ //   gymField.reportValidity();
 
     // Find the first invalid field and scroll to it
     if (!isValid) {
@@ -492,7 +514,7 @@ function checkout() {
     
     alert("Please wait! Your order is being processed.");
     
-     sendEmail(billingDetails, cartData, totalAmount);
+    sendEmail(billingDetails, cartData, totalAmount);
 }
 
 
@@ -516,7 +538,7 @@ function sendEmail(billingDetails, cartData, totalAmount) {
 
     try {
         emailjs
-            .send("service_nzbfq1h", "template_5089gbn", templateParams)
+            .send("service_xv2kvlp", "template_eo5yg5e", templateParams)
             .then((response) => {
                 alert("Order placed successfully!\n\n Thank you for your purchase!\n\n ");
 
@@ -535,7 +557,7 @@ function sendEmail(billingDetails, cartData, totalAmount) {
             })
             .catch((error) => {
                 console.error("Failed to send email:", error);
-                alert("We encountered an issue while processing your order. Please Contact Admin's ph : 8660739940.");
+                alert("We encountered an issue while processing your order.\n\n  Please Contact Admin's ph : 8660739940.");
                 
                 // Re-enable the checkout button
                 const checkoutButton = document.getElementById('place_order');

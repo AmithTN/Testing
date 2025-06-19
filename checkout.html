@@ -685,17 +685,39 @@
                                             <h4 style="margin: 0; font-size: 28px; font-weight: bold;">₹<span id="cart-total">0</span></h4>
                                         </div>
                                         
-                                        <button type="submit" id="place_order" class="button alt  elementor-button-submit" name="checkout_place_order"  value="Place order" data-value="Place order">Place order</button>
-                                        
+                                        <!-- TOTAL BREAKDOWN DROPDOWN -->
+                                        <div id="total-breakdown-toggle" style="text-align: right; margin-bottom: 10px; cursor: pointer; color: #409843; font-weight: 500;">
+                                             ▼ View Charges Breakdown
+                                        </div>
+
+                                        <!-- Hidden Breakdown Section -->
+                                        <div id="total-breakdown" style="display: none; font-size: 14px; padding: 10px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 20px;">
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                             <span>Item Total:</span>
+                                             <span>₹<span id="item-total">0</span></span>
+                                        </div>
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                             <span>Delivery Charges:</span>
+                                             <span>₹<span id="breakdown-delivery">0</span></span>
+                                        </div>
+                                        <div style="display: flex; justify-content: space-between;">
+                                             <span>Service & Packing:</span>
+                                             <span>₹<span id="service-charge">0</span></span>
+                                        </div>
+                                        </div>
+
+                                        <!-- ORDER BUTTON -->
+                                        <button type="submit" id="place_order" class="button alt elementor-button-submit" name="checkout_place_order" value="Place order" data-value="Place order">Place order</button>
+
+                                        <!-- PAYMENT METHODS -->
                                         <div class="elementor-field-group">
                                             <div class="payment-methods-container">
                                                 <img class="payment_methods" src="Images/gpay.jpg" alt="Gpay Payment Solutions">	
                                                 <img class="payment_methods" src="Images/phonepe.jpg" alt="PhonePe Payment Solutions">	
                                                 <img class="payment_methods" src="Images/paytm.jpg" alt="Paytm Payment Solutions">	
                                                 <img class="payment_methods" src="Images/amazon-pay.jpg" alt="Amazon-pay Payment Solutions">	
-                                            </div>
-                                        </div>     
-                                  
+                                             </div>
+                                        </div>                                
                                     </div>
                                 </form>                
                             </div>
